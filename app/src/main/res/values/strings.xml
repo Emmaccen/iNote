@@ -1,0 +1,130 @@
+<resources>
+    <string name="app_name">NotePad</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_edith_note">Edit Note</string>
+    <string name="title_activity_recycler_view" translatable="false">RecyclerViewActivity</string>
+    <string name="title_activity_home" translatable="false">HomeActivity</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="nav_header_title" translatable="false">Android Studio</string>
+    <string name="nav_header_subtitle" translatable="false">android.studio@android.com</string>
+    <string name="nav_header_desc" translatable="false">Navigation header</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow" translatable="false">Slideshow</string>
+    <string name="menu_tools" translatable="false">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="title_activity_home_page" translatable="false">HomePage</string>
+    <string name="category_uncategorized">Uncategorized</string>
+    <string name="category_work">Work</string>
+    <string name="category_family">Family</string>
+    <string name="category_study">Study</string>
+    <string name="category_personal">Personal</string>
+    <string name="note_title">Note Title</string>
+    <string name="contextDelete">Delete</string>
+    <string name="contextEdit">Edit</string>
+    <string name="contextShare">Share</string>
+    <string name="search">Search</string>
+    <string name="search_by_title">Search by title</string>
+    <string name="notes">Notes</string>
+    <string name="title_view">Title View</string>
+    <string name="sort_by_category">Sort By Category</string>
+    <string name="about">About</string>
+    <string name="communicate">Communicate</string>
+    <string name="rate">Rate</string>
+    <string name="save">Save</string>
+    <string name="delete_note">Delete Note</string>
+    <string name="clear_note">Clear Note</string>
+    <string name="discard_changes">Discard Changes</string>
+    <string name="cancel">Cancel</string>
+    <string name="send_as_mail">Send as mail</string>
+    <string name="backup_notes">Backup Notes</string>
+    <string name="delete_all_notes">Delete all notes</string>
+    <string name="select_multiple">Select Multiple</string>
+    <string name="delete_all">Delete all notes</string>
+    <string name="dialogue_deletion_warning">All notes will be deleted !  This action cannot be undone</string>
+    <string name="dialogue_delete">Delete</string>
+    <string name="dialogue_toast_message">All notes deleted</string>
+    <string name="dialogue_cancel_button">Cancel</string>
+    <string name="cannot_perform_restore">Cannot perform restore on new notes</string>
+    <string name="toast_message_uncategorized">Uncategorized</string>
+    <string name="toast_message_work">Work</string>
+    <string name="toast_message_family_affair">Family affair</string>
+    <string name="toast_message_study">Study</string>
+    <string name="toast_message_personal">Personal</string>
+    <string name="toast_message_unsaved_note">Unsaved Note</string>
+    <string name="toast_message_deleted_successfully">Deleted successfully</string>
+    <string name="toast_message_empty_note_not_saved">Empty Not Saved</string>
+    <string name="toast_message_note">Note</string>
+    <string name="toast_message_saved">Saved</string>
+    <string name="toast_message_new_note_added">New Note Added</string>
+    <string name="toast_new_note">New note</string>
+    <string name="select_an_option">Select an option</string>
+    <string name="toast_no_notes_found">No note found</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="auto_sync_notes">Sync notes automatically</string>
+    <string name="sync_network_config">Sync network configuration</string>
+    <string name="sync_on_wifi">Only sync notes on wifi</string>
+    <string name="sync_on_any">Sync notes on any network</string>
+    <string name="update">Product update</string>
+    <string name="update_on_notif">Notify me of new updates</string>
+    <string name="update_off_notif">Do not notify me of new updates</string>
+    <string name="update_notif">Notification</string>
+    <string name="show_note_categories">Show note categories</string>
+    <string name="night_mode_on">Night mode enabled</string>
+    <string name="night_mode_off">Night mode disabled</string>
+    <string name="recycle_on">Enabled</string>
+    <string name="recycle_off">Disabled</string>
+    <string name="settings_restore">Restore settings default</string>
+
+
+    <string-array name="categories_settings_list">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+    <string-array name="categories_settings_values">
+        <item>yes</item>
+        <item>no</item>
+    </string-array>
+    <string name="settings_categories_def_value">yes</string>
+
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="alert_restoredialoge_message">This will revert all changes\nThis action cannot be undone</string>
+    <string name="restore_settings_default">Restore all settings default values</string>
+    <string name="yes">Yes</string>
+    <string name="default_settings_toast_message">Default settings restored</string>
+    <string name="recycle_bin_menu">Recycle Bin</string>
+    <string name="context_menu_toast_note_restored">Note Restored</string>
+    <string name="recyclebin_restore_all">Restore all</string>
+
+    <string name="reminder_notification_title_template">Reminder: %1$s</string>
+
+    <!-- TODO: remove this placeholder text -->
+    <string name="reminder_notification_placeholder_text_template">You said %1$s and lorem ipsum
+        dolor sit amet, consectetur adipiscing elit. Etiam non enim magna. Morbi dictum, velit vel
+        semper venenatis, magna odio volutpat velit, at ullamcorper nulla lacus sed turpis.
+        Pellentesque vitae metus elit, nec tincidunt tellus. Integer sed nisl sem, ullamcorper
+        ornare lacus. Duis ac mauris sed massa congue volutpat. Donec sed erat sit amet turpis
+        viverra rhoncus sit amet nec magna. Donec lacinia ligula at libero volutpat volutpat nec nec
+        tortor.
+    </string>
+    <string name="add_reminder">Add Reminder</string>
+    <string name="view_profile">View Profile</string>
+
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/recycleBin_restore_all"
+        android:orderInCategory="99"
+        android:title="@string/recyclebin_restore_all"/>
+    <item
+        android:orderInCategory="100"
+        android:title="@string/recycle_bin_menu"
+        android:id="@+id/recycle_bin"
+        android:icon="@drawable/ic_restore_24dp"
+        />
+    <item
+        android:id="@+id/app_bar_search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:orderInCategory="101"
+        android:title="@string/search"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom" />
+    <item
+        android:title="@string/delete_all_notes"
+        android:id="@+id/app_bar_delete_all"
+        android:orderInCategory="102"
+        />
+    <item
+        android:title="@string/select_multiple"
+        android:id="@+id/app_bar_mark_notes"
+        android:orderInCategory="103"
+        />
+
+    <item
+        android:id="@+id/app_bar_action_settings"
+        android:orderInCategory="104"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+</menu>

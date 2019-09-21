@@ -1,0 +1,92 @@
+<!--
+  ~ Copyright 2018 The app Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<PreferenceCategory app:title="@string/messages_header">-->
+
+        <!--<EditTextPreference-->
+            <!--app:icon="@drawable/ic_about_24dp"-->
+            <!--app:key="signature"-->
+            <!--app:title="@string/signature_title"-->
+            <!--app:useSimpleSummaryProvider="true" />-->
+
+        <!--<ListPreference-->
+            <!--app:defaultValue="reply"-->
+            <!--app:entries="@array/reply_entries"-->
+            <!--app:entryValues="@array/reply_values"-->
+            <!--app:key="reply"-->
+            <!--app:title="@string/reply_title"-->
+            <!--app:useSimpleSummaryProvider="true" />-->
+
+    <!--</PreferenceCategory>-->
+
+    <PreferenceCategory app:title="@string/sync_header">
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:icon="@drawable/ic_sync_black_24dp"
+            app:key="sync"
+            app:title="@string/auto_sync_notes" />
+
+        <SwitchPreferenceCompat
+            app:dependency="sync"
+            app:key="attachment"
+            app:summaryOff="@string/sync_on_any"
+            app:summaryOn="@string/sync_on_wifi"
+            app:title="@string/sync_network_config" />
+
+    </PreferenceCategory>
+<PreferenceCategory app:title="@string/update"
+    app:icon="@drawable/ic_about_24dp">
+    <SwitchPreferenceCompat
+        app:key="update"
+        app:summaryOff="@string/update_off_notif"
+        app:summaryOn="@string/update_on_notif"
+        app:title="@string/update_notif"
+        >
+
+    </SwitchPreferenceCompat>
+</PreferenceCategory>
+    <ListPreference
+        app:icon="@drawable/ic_show_categories_24dp"
+    app:defaultValue="no"
+    app:entries="@array/categories_settings_list"
+    app:entryValues="@array/categories_settings_values"
+    app:key="catView"
+    app:title="@string/show_note_categories"
+    app:useSimpleSummaryProvider="true" />
+<SwitchPreferenceCompat app:title="Toggle Night-Mode"
+    app:icon="@drawable/ic_night_24dp"
+    app:key="night"
+    app:summaryOn="@string/night_mode_on"
+    app:summaryOff="@string/night_mode_off">
+</SwitchPreferenceCompat>
+<SwitchPreferenceCompat app:title="Recycle bin"
+    app:icon="@drawable/ic_recycle_bin_24dp"
+    app:defaultValue="@string/recycle_off"
+    app:key="recycle"
+    app:summaryOn="@string/recycle_on"
+    app:summaryOff="@string/recycle_off"
+    >
+</SwitchPreferenceCompat>
+    <Preference app:title="@string/settings_restore"
+        app:icon="@drawable/ic_restore_24dp"
+        app:key="restore"
+        app:summary="Restore all settings to default">
+    </Preference>
+
+</androidx.preference.PreferenceScreen>
