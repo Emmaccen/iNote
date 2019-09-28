@@ -11,9 +11,12 @@
         android:roundIcon="@mipmap/ic_app_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ProfileActivity"
-            android:label="Profile"
-            ></activity>
+        <activity android:name=".NoteReaderActivity"
+            >
+        </activity>
+        <activity
+            android:name=".ProfileActivity"
+            android:label="Profile" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"

@@ -57,8 +57,10 @@ public class EdithNote extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if(!isCancelling && !isDeleting && !isSaveIcon){
-            saveNote();
-            finish();
+            //saveNote();
+//            finish();
+            /* I disabled saving of note in on destroy because on resume in
+            Homepage is called before onDestroy here so there's no way it'll invalidate adapters*/
         }
     }
 
@@ -66,7 +68,7 @@ public class EdithNote extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if(!isCancelling && !isDeleting && !isSaveIcon){
-           // saveNote();
+           saveNote();
 
 
 //            int orientation = getResources().getConfiguration().orientation;
@@ -80,7 +82,7 @@ public class EdithNote extends AppCompatActivity {
             * but i figured it would have been a better practice in on destroy instead*/
 
 
-           // finish();
+           finish();
 
         }else{
 
@@ -337,8 +339,18 @@ public class EdithNote extends AppCompatActivity {
         }
         saveNotesToMemory();
     }
+    public void saveDeletedNoteToMemory(){
+        HomePage.recycleBinPreference = getSharedPreferences(
+                HomePage.MY_RECYCLE_PREFERENCE,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = HomePage.recycleBinPreference.edit();
+        Gson jsonString = new Gson();
+        String note = jsonString.toJson(HomePage.recycleBinArrayList);
+        editor.putString(HomePage.ARRAY_OF_RECYCLED_NOTE_KEY,note);
+        editor.apply();
+    }
     public void saveNotesToMemory(){
-        HomePage.sharedPreferences = getSharedPreferences(HomePage.MY_PREFERENCE, Context.MODE_PRIVATE);
+        HomePage.sharedPreferences = getSharedPreferences(
+                HomePage.MY_PREFERENCE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = HomePage.sharedPreferences.edit();
         Gson gson = new Gson();
         String jsonString = gson.toJson(HomePage.noteList);
@@ -355,6 +367,10 @@ public class EdithNote extends AppCompatActivity {
             Toast.makeText(this,getString(R.string.toast_message_unsaved_note), Toast.LENGTH_SHORT).show();
         }else{
             int deletionPosition = bundle.getInt("p");
+            if(HomePage.showRecycleBinMenuOption){
+                HomePage.recycleBinArrayList.add(HomePage.noteList.get(deletionPosition));
+                saveDeletedNoteToMemory();
+            }
             isDeleting = true;
             HomePage.noteList.remove(deletionPosition);
             Toast.makeText(this,getString(R.string.toast_message_deleted_successfully), Toast.LENGTH_SHORT).show();
@@ -394,7 +410,12 @@ public class EdithNote extends AppCompatActivity {
             clearNote();
         }else if(id == R.id.action_delete){
             deleteNote();
-        }else if(id == R.id.action_save){
+        }else if(id == R.id.action_reader_mode){
+            startActivity(new Intent(this,NoteReaderActivity.class)
+            .putExtra("title",textTitle.getText().toString()
+            ).putExtra("text",textBody.getText().toString()));
+        }
+        else if(id == R.id.action_save){
             isSaveIcon = true;
             // isSaveIcon here is set to true to avoid
             //saving the note twice ( here in the menu and up the onDestroy)

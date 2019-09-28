@@ -2,35 +2,42 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.notepad.EditNote">
+    <item android:id="@+id/action_reader_mode"
+        android:title="@string/read"
+        android:orderInCategory="99"
+        app:showAsAction="never" />
+
     <item android:id="@+id/action_reminder"
         android:title="@string/add_reminder"
         android:orderInCategory="100"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_save"
         android:icon="@android:drawable/ic_menu_save"
         android:orderInCategory="101"
         android:title="@string/save"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_delete"
         android:orderInCategory="102"
-        android:title="@string/delete_note" />
+        android:title="@string/delete_note"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_clear"
         android:orderInCategory="103"
-        android:title="@string/clear_note" />
+        android:title="@string/clear_note"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_restore"
         android:orderInCategory="104"
-        android:title="@string/discard_changes" />
+        android:title="@string/discard_changes"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_cancel"
         android:icon="@android:drawable/ic_menu_close_clear_cancel"
         android:orderInCategory="105"
         android:title="@string/cancel"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_send_email"
         android:orderInCategory="106"
@@ -39,5 +46,6 @@
     <item
         android:id="@+id/action_backup"
         android:orderInCategory="107"
-        android:title="@string/backup_notes" />
+        android:title="@string/backup_notes"
+        app:showAsAction="never" />
 </menu>

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ProfileActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/profile_appbar"
         style="@style/AppTheme.AppBarOverlay"
+        android:background="#FFFFFF"
         app:layout_scrollFlags="scroll|enterAlways"
         android:layout_width="match_parent"
         android:layout_height="260dp">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -21,15 +22,16 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/app_drawer_book"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                android:src="@drawable/app_drawer_book"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.111" />
+                app:layout_constraintVertical_bias="0.0" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/change_profile_picture_button"
@@ -40,21 +42,27 @@
                 android:onClick="setProfilePicture"
                 android:src="@drawable/add_profile_pic_image"
                 app:fabSize="mini"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.633"
+                app:layout_constraintHorizontal_bias="0.665"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.241" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-<com.google.android.material.tabs.TabLayout
-    android:id="@+id/profile_tab_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
     </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/profile_view_pager"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_margin="8dp"
+            android:id="@+id/profile_email_text"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:textSize="23dp"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:text="Email " />
+    </RelativeLayout>
+</LinearLayout>

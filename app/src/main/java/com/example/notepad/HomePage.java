@@ -9,17 +9,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -30,18 +22,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
-import android.text.Layout;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
+
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
@@ -72,8 +60,8 @@ public class HomePage extends AppCompatActivity
     static SharedPreferences recycleBinPreference;
     static final String MY_PREFERENCE = "storage link";
     static final String MY_RECYCLE_PREFERENCE = "recycleBin link";
-    final String ARRAY_OF_RECYCLED_NOTE_KEY = "deleted notes";
-    ArrayList<Notes> recycleBinArrayList;
+    static final String ARRAY_OF_RECYCLED_NOTE_KEY = "deleted notes";
+   static ArrayList<Notes> recycleBinArrayList;
 
     private int selectedNotePosition;
     private ArrayList<Notes> sortByCategoriesList;
@@ -157,6 +145,7 @@ public class HomePage extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        Toast.makeText(this, "on resume", Toast.LENGTH_SHORT).show();
         SettingsScreen();
         adapter.notifyDataSetChanged();
         titleAdapter.notifyDataSetChanged();
@@ -271,13 +260,6 @@ public class HomePage extends AppCompatActivity
                     }
                 }
         );*/
-
-
-
-
-
-
-
 
 
 

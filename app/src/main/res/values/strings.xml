@@ -126,5 +126,6 @@
     </string>
     <string name="add_reminder">Add Reminder</string>
     <string name="view_profile">View Profile</string>
+    <string name="read">Read</string>
 
 </resources>
