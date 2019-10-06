@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">NotePad</string>
+    <string name="app_name">iNote</string>
     <string name="about">Sur</string>
     <string name="action_settings">Réglages</string>
     <string name="backup_notes">Sauvegarde</string>

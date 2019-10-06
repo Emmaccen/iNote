@@ -1,4 +1,4 @@
-package com.example.notepad;
+package com.example.iNote;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,12 +13,14 @@ TextView title,textBody;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_reader);
         getSupportActionBar().setTitle("Reading Mode");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         title = findViewById(R.id.reader_mode_title);
         textBody = findViewById(R.id.reader_mode_text_body);
         Intent intent = getIntent();
         intent.getExtras();
         title.setText(intent.getStringExtra("title"));
         textBody.setText(intent.getStringExtra("text"));
+
 
     }
 }

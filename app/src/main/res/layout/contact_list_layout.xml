@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:layout_margin="4dp">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:padding="4dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="4dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:id="@+id/contact_list_name"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="oriola emmanuel"
+            android:layout_margin="4dp"/>
+</androidx.appcompat.widget.LinearLayoutCompat>

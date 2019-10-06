@@ -1,9 +1,8 @@
-package com.example.notepad;
+package com.example.iNote;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.text.Layout;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;

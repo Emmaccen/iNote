@@ -1,4 +1,4 @@
-package com.example.notepad;
+package com.example.iNote;
 
 import android.content.Context;
 import android.graphics.Color;

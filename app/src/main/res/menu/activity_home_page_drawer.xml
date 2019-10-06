@@ -27,6 +27,11 @@
     <item android:title="@string/communicate">
         <menu>
             <item
+                android:id="@+id/nav_contacts"
+                android:title="Contacts"
+                android:icon="@drawable/ic_chats_24dp"/>
+
+            <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="@string/menu_share" />

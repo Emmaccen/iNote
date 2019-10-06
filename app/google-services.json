@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:832623238241:android:e5da7bf56ab575077e5e20",
         "android_client_info": {
-          "package_name": "com.example.notepad"
+          "package_name": "com.example.iNote"
         }
       },
       "oauth_client": [

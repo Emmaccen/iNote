@@ -1,4 +1,4 @@
-package com.example.notepad;
+package com.example.iNote;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -411,8 +413,14 @@ public class EdithNote extends AppCompatActivity {
         }else if(id == R.id.action_delete){
             deleteNote();
         }else if(id == R.id.action_reader_mode){
+            String title;
+            if(textTitle.getText().toString().isEmpty()){
+                title = "Note";
+            }else {
+                title = textTitle.getText().toString();
+            }
             startActivity(new Intent(this,NoteReaderActivity.class)
-            .putExtra("title",textTitle.getText().toString()
+            .putExtra("title",title
             ).putExtra("text",textBody.getText().toString()));
         }
         else if(id == R.id.action_save){

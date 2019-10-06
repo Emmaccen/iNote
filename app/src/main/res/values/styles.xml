@@ -17,4 +17,40 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+<style name="LoginSignInPage">
+    <item name="android:paddingStart">5dp</item>
+    <item name="android:paddingEnd">5dp</item>
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">40dp</item>
+    <item name="android:gravity">center</item>
+    <item name="android:layout_marginStart">32dp</item>
+    <item name="android:layout_marginEnd">32dp</item>
+    <item name="android:layout_marginTop">16dp</item>
+    <item name="android:ems">10</item>
+    <item name="android:background">@drawable/login_signup_background</item>
+</style>
+
+    <style name="ProfileStyle">
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">32dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Material.Title</item>
+        
+    </style>
+
 </resources>

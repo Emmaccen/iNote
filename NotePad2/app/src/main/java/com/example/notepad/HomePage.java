@@ -1,4 +1,4 @@
-package com.example.notepad;
+package com.example.iNote;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;

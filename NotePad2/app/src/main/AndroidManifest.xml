@@ -15,7 +15,7 @@
             android:parentActivityName=".HomePage">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.notepad.HomePage" />
+                android:value="com.example.iNote.HomePage" />
         </activity>
         <activity
             android:name=".HomePage"

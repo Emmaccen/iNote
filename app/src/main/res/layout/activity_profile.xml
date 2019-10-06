@@ -11,10 +11,10 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/profile_appbar"
         style="@style/AppTheme.AppBarOverlay"
-        android:background="#FFFFFF"
+        android:background="@android:color/transparent"
         app:layout_scrollFlags="scroll|enterAlways"
         android:layout_width="match_parent"
-        android:layout_height="260dp">
+        android:layout_height="230dp">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -48,21 +48,83 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.241" />
+
+            <TextView
+                android:id="@+id/profile_email_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="oriolaemmanuel199@gmail.com"
+                android:textSize="18dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:layout_margin="8dp"
-            android:id="@+id/profile_email_text"
+
+        <EditText
+            android:drawableEnd="@drawable/profile_email_icon_24dp"
+            style="@style/ProfileStyle"
+            android:inputType="textEmailAddress"
+            android:id="@+id/profile_email_edit_text_view"
+            android:text="oriolaemmanuel199@gmail.com"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:inputType="number"
+            android:drawableRight="@drawable/profile_phone_number_icon_24dp"
+            style="@style/ProfileStyle"
+            android:id="@+id/profile_phone_edit_text_view"
+            android:text="07030680817"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_email_edit_text_view" />
+
+        <EditText
+            android:inputType="textPassword"
+            android:drawableRight="@drawable/profile_password_icon_24dp"
+            android:id="@+id/profile_password_edit_text_view"
+            style="@style/ProfileStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="whatever"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_phone_edit_text_view" />
+
+        <EditText
+            android:drawableRight="@drawable/profile_password_icon_24dp"
+            style="@style/ProfileStyle"
+            android:id="@+id/profile_confirm_password_edit_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:hint="Confirm Password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_password_edit_text_view" />
+
+        <Button
+            android:id="@+id/profile_delete_account_button"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_alignParentStart="true"
-            android:textSize="23dp"
-            android:gravity="center"
-            android:layout_alignParentTop="true"
-            android:text="Email " />
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Delete Account"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

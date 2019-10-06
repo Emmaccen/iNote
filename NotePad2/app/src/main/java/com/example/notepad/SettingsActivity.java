@@ -1,4 +1,4 @@
-package com.example.notepad;
+package com.example.iNote;
 
 import android.app.Activity;
 import android.content.DialogInterface;

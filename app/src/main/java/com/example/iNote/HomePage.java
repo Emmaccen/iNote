@@ -1,10 +1,12 @@
-package com.example.notepad;
+package com.example.iNote;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +14,8 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -31,16 +35,11 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +51,8 @@ public class HomePage extends AppCompatActivity
     TitleRecyclerAdapter titleAdapter;
     SortByCatagoriesAdapters sortByCatagoriesAdapter;
     boolean isCategoriesView;
+
+    static final int CONTACT_REQUEST_CODE = 31;
 
     FirebaseFirestore fireStore;
 
@@ -145,7 +146,6 @@ public class HomePage extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(this, "on resume", Toast.LENGTH_SHORT).show();
         SettingsScreen();
         adapter.notifyDataSetChanged();
         titleAdapter.notifyDataSetChanged();
@@ -584,12 +584,48 @@ public class HomePage extends AppCompatActivity
         }
         else if (id == R.id.nav_share) {
 
+        }else if(id == R.id.nav_contacts){
+            if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.READ_CONTACTS)
+                    ==  PackageManager.PERMISSION_GRANTED){
+                startActivity(new Intent(this, ChatActivity.class));
+            }else{
+                requestPermissions();
+            }
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == CONTACT_REQUEST_CODE) {//sad face :{
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startActivity(new Intent(this, ChatActivity.class));
+            } else {
+                Toast.makeText(this, "permission denied", Toast.LENGTH_SHORT).show();
+                requestPermissions();
+                //requestPermission again to enter the reationale part, (winks!)
+            }
+        }
+
+    }
+    private void requestPermissions() {
+        if(ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.READ_CONTACTS)){
+            /*TODO
+             *  this is invoked when user cancels your permission request and you need to explain why you needed the permission
+             *  */
+            Toast.makeText(this, "should show requestRationale", Toast.LENGTH_SHORT).show();
+        }else{
+            //request permission
+            ActivityCompat.requestPermissions(this,new String[]{
+                    Manifest.permission.READ_CONTACTS},CONTACT_REQUEST_CODE);
+        }
+    }
+
     public void loadNotesFromMemory(){
         sharedPreferences = getSharedPreferences(MY_PREFERENCE, Context.MODE_PRIVATE);
         Gson gson = new Gson();

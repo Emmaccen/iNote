@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    android:background="@drawable/navigation_shade_design"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 <!--android:background="@drawable/app_drawer_book"-->
 

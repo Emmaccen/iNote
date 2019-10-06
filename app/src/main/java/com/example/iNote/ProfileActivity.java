@@ -1,4 +1,4 @@
-package com.example.notepad;
+package com.example.iNote;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +22,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void setProfilePicture(View view){
-        startActivityForResult(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI),300);{
+        startActivityForResult(new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.INTERNAL_CONTENT_URI),300);{
         }
     }
 
@@ -33,9 +34,9 @@ public class ProfileActivity extends AppCompatActivity {
             imageUri = data.getData();
             profileImage = findViewById(R.id.profile_image);
             profileImage.setImageURI(imageUri);
-            Toast.makeText(this,imageUri.getPath(),Toast.LENGTH_LONG).show();
+//            Toast.makeText(this,imageUri.getPath(),Toast.LENGTH_LONG).show();
         }else{
-
+            Toast.makeText(this, "Something went wrong...", Toast.LENGTH_SHORT).show();
         }
     }
 }
