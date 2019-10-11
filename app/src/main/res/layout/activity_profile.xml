@@ -1,130 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ProfileActivity">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+   >
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/profile_appbar"
-        style="@style/AppTheme.AppBarOverlay"
-        android:background="@android:color/transparent"
-        app:layout_scrollFlags="scroll|enterAlways"
-        android:layout_width="match_parent"
-        android:layout_height="230dp">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_marginTop="16dp"
-                android:src="@drawable/app_drawer_book"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/change_profile_picture_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="96dp"
-                android:backgroundTint="#FFFFFF"
-                android:onClick="setProfilePicture"
-                android:src="@drawable/add_profile_pic_image"
-                app:fabSize="mini"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.665"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.241" />
-
-            <TextView
-                android:id="@+id/profile_email_text_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="16dp"
-                android:gravity="center"
-                android:text="oriolaemmanuel199@gmail.com"
-                android:textSize="18dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-        <EditText
-            android:drawableEnd="@drawable/profile_email_icon_24dp"
-            style="@style/ProfileStyle"
-            android:inputType="textEmailAddress"
-            android:id="@+id/profile_email_edit_text_view"
-            android:text="oriolaemmanuel199@gmail.com"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/change_profile_picture_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="124dp"
+        android:backgroundTint="#FFFFFF"
+        android:onClick="setProfilePicture"
+        android:src="@drawable/add_profile_pic_image"
+        app:fabSize="mini"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.646"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:inputType="number"
-            android:drawableRight="@drawable/profile_phone_number_icon_24dp"
-            style="@style/ProfileStyle"
+    <TextView
+        android:id="@+id/profile_email_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:gravity="center"
+        android:hint="youremail@somemail.com"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+
+    <EditText
+        android:id="@+id/profile_email_edit_text_view"
+        style="@style/ProfileStyle"
+        android:layout_marginTop="68dp"
+        android:drawableEnd="@drawable/profile_email_icon_24dp"
+        android:inputType="textEmailAddress"
+        android:hint="youremail@somemail.com"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_email_text_view" />
+
+    <EditText
             android:id="@+id/profile_phone_edit_text_view"
-            android:text="07030680817"
+            style="@style/ProfileStyle"
+            android:drawableEnd="@drawable/profile_phone_number_icon_24dp"
+            android:inputType="phone"
+            android:hint="Phone Number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_email_edit_text_view" />
 
         <EditText
-            android:inputType="textPassword"
-            android:drawableRight="@drawable/profile_password_icon_24dp"
             android:id="@+id/profile_password_edit_text_view"
             style="@style/ProfileStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="whatever"
+            android:drawableEnd="@drawable/profile_password_icon_24dp"
+            android:inputType="textPassword"
+            android:hint="Password"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_phone_edit_text_view" />
 
         <EditText
-            android:drawableRight="@drawable/profile_password_icon_24dp"
-            style="@style/ProfileStyle"
             android:id="@+id/profile_confirm_password_edit_text_view"
+            style="@style/ProfileStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/profile_password_icon_24dp"
             android:ems="10"
-            android:inputType="textPassword"
             android:hint="Confirm Password"
+            android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_password_edit_text_view" />
 
-        <Button
-            android:id="@+id/profile_delete_account_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Delete Account"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
+    <Button
+        android:id="@+id/profile_delete_account_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="Delete Account"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profile_confirm_password_edit_text_view" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

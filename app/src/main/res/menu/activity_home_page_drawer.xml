@@ -19,6 +19,11 @@
             android:id="@+id/nav_sort_by_categories"
             android:icon="@drawable/ic_sort_by_category_24dp"
             android:title="@string/sort_by_category" />
+        <item
+            android:id="@+id/nav_private_notes"
+            android:icon="@drawable/profile_password_icon_24dp"
+            android:title="Private Notes"
+            />
     </group>
 
 <group
@@ -40,7 +45,6 @@
                 android:title="@string/rate"
                 android:icon="@drawable/ic_rate_24dp"/>
         </menu>
-
     </item>
 
 </group>
@@ -48,4 +52,14 @@
         android:id="@+id/nav_about"
         android:icon="@drawable/ic_about_24dp"
         android:title="@string/about" />
+    <item
+        android:id="@+id/nav_log_out"
+        android:icon="@drawable/nav_log_out_icon_24dp"
+        android:title="Log Out"
+        />
+    <item
+        android:title="Sign In"
+        android:icon="@drawable/nav_log_out_icon_24dp"
+        android:id="@+id/nav_sign_in"
+        />
 </menu>

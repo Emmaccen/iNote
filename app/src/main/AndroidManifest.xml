@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.iNote">
+    package="com.echo.iNote">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -12,11 +13,11 @@
         android:roundIcon="@mipmap/ic_app_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Register"
+        <activity android:name="com.echo.iNote.Register"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".LoginOrSignUp"
+            android:name="com.echo.iNote.LoginOrSignUp"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,44 +26,37 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".OnBoardingScreen"
+            android:name="com.echo.iNote.OnBoardingScreen"
             android:theme="@style/AppTheme.NoActionBar">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".ChatActivity"
+            android:name="com.echo.iNote.ChatActivity"
             android:label="@string/title_activity_chat"
-            android:parentActivityName=".HomePage"
+            android:parentActivityName="com.echo.iNote.HomePage"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.iNote.HomePage" />
+                android:value="com.echo.iNote.HomePage" />
         </activity>
-        <activity android:name=".NoteReaderActivity">
+        <activity android:name="com.echo.iNote.NoteReaderActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.iNote.HomePage" />
+                android:value="com.echo.iNote.HomePage" />
         </activity>
         <activity
-            android:name=".ProfileActivity"
+            android:name="com.echo.iNote.ProfileActivity"
             android:label="User Profile"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.echo.iNote.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".HomePage">
+            android:parentActivityName="com.echo.iNote.HomePage">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.iNote.HomePage" />
+                android:value="com.echo.iNote.HomePage" />
         </activity>
         <activity
-            android:name=".HomePage"
+            android:name="com.echo.iNote.HomePage"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -73,7 +67,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EdithNote"
+            android:name="com.echo.iNote.EdithNote"
             android:label="@string/title_activity_edith_note"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"

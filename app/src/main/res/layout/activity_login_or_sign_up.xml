@@ -19,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:maxLength="9"
         style="@style/LoginSignInPage"
         android:textColor="@android:color/black"
         android:hint="Password"

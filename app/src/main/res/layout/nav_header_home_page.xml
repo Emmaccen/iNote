@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    tools:context=".HomePage">
 <!--android:background="@drawable/app_drawer_book"-->
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -32,10 +33,11 @@
         app:layout_constraintTop_toBottomOf="@+id/nav_profile_image" />
 
     <TextView
-        android:id="@+id/email_text"
+        android:id="@+id/nav_header_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="oriolaemmanuel199@gmail.com"
+        android:hint="youremail@somemail.com"
+        android:textColorHint="#000000"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#000000"
         android:textSize="12sp"

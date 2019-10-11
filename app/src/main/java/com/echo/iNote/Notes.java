@@ -54,7 +54,7 @@ public class Notes implements Parcelable {
         this.textBody = textBody;
     }
 
-    public static Notes getNoteClass() {
+  /*  public static Notes getNoteClass() {
         return noteClass;
     }
 
@@ -68,7 +68,7 @@ public class Notes implements Parcelable {
 
     public static void setNotesArray(List<Notes> notesArray) {
         Notes.notesArray = notesArray;
-    }
+    }*/
 
     @Override
     public int describeContents() {
@@ -93,12 +93,14 @@ public String getDate(){
         dest.writeString(date);
         dest.writeInt(colors);
     }
-    public void addNotesToArray(String title, String textBody,String date,int colors){
+
+
+   /* public void addNotesToArray(String title, String textBody,String date,int colors){
         this.title = title;
         this.textBody = textBody;
         this.date = date;
         this.colors = colors;
 
         notesArray.add(new Notes(title,textBody,date,colors));
-    }
+    }*/
 }

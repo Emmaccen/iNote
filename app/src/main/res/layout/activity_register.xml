@@ -27,6 +27,7 @@
         app:layout_constraintTop_toBottomOf="@+id/registration_email" />
 
     <EditText
+        android:maxLength="9"
         style="@style/LoginSignInPage"
         android:id="@+id/registration_password"
         android:hint="Password"
@@ -36,6 +37,7 @@
         app:layout_constraintTop_toBottomOf="@+id/registration_number" />
 
     <Button
+        android:onClick="registerNewUser"
         android:id="@+id/sign_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

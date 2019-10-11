@@ -138,5 +138,6 @@
     <string name="title_activity_log_in">LogIn</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="all_fields_are_required">All fields are required !</string>
 
 </resources>

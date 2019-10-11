@@ -1,4 +1,4 @@
-package com.example.iNote;
+package com.echo.iNote;
 
 import android.content.Context;
 import android.content.Intent;

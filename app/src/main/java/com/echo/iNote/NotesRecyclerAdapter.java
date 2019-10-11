@@ -120,10 +120,13 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
             menu.add(pos,100,0,v.getContext().getString(R.string.contextDelete));
             menu.add(pos,101,1,v.getContext().getString(R.string.contextEdit));
             menu.add(pos,102,2,v.getContext().getString(R.string.contextShare));
+
+            menu.add(pos,104,4,"Move To Private");
         }
 
         public void openNote(Context view,int position){
             Intent intent = new Intent(view,EdithNote.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("notes",HomePage.noteList.get(position));
             intent.putExtra("p",position);
             view.getApplicationContext().startActivity(intent);

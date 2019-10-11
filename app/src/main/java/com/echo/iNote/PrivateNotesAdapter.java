@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +11,20 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdapter.ViewHolder>{
+public class PrivateNotesAdapter extends RecyclerView.Adapter<PrivateNotesAdapter.ViewHolder>{
     Context contex;
-    ArrayList<Notes> notes;
+    ArrayList<Notes> privateNotes;
 
-    NotesRecyclerAdapter(ArrayList<Notes> notes){
-        this.notes = notes;
+    PrivateNotesAdapter(ArrayList<Notes> privateNotes){
+        this.privateNotes = privateNotes;
 
     }
 
@@ -36,7 +37,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        Notes note = notes.get(viewHolder.getAdapterPosition());
+        Notes note = privateNotes.get(viewHolder.getAdapterPosition());
         viewHolder.title.setText(note.getTitle());
         viewHolder.textBody.setText(note.getTextBody());
         viewHolder.date.setText(note.getDate());
@@ -56,7 +57,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
 
     @Override
     public int getItemCount() {
-        return notes.size();
+        return privateNotes.size();
     }
 
     public  class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
@@ -94,7 +95,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
                 public void onClick(View v) {
                     int pos;
                     if(HomePage.isSearchView){
-                        pos = HomePage.noteList.indexOf(notes.get(getAdapterPosition()));
+                        pos = HomePage.noteList.indexOf(privateNotes.get(getAdapterPosition()));
                         openNote(itemView.getContext(),pos);
                     }else{
                         openNote(itemView.getContext(),getAdapterPosition());
@@ -112,19 +113,25 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             int pos;
             if(HomePage.isSearchView){
-                pos = HomePage.noteList.indexOf(notes.get(getAdapterPosition()));
+                /*this part doesn't work yet since we haven't yet implemented the search part for private notes*/
+                pos = HomePage.protectedNotesArray.indexOf(privateNotes.get(getAdapterPosition()));
             }else {
                 pos = getAdapterPosition();
             }
+            /*context menu params (groupID, itemID, menuPosition/Arrangement, StringResource*/
             menu.setHeaderTitle(contex.getString(R.string.select_an_option));
             menu.add(pos,100,0,v.getContext().getString(R.string.contextDelete));
             menu.add(pos,101,1,v.getContext().getString(R.string.contextEdit));
             menu.add(pos,102,2,v.getContext().getString(R.string.contextShare));
+            menu.add(pos,103,3,"Move To Notes");
+
+
         }
 
         public void openNote(Context view,int position){
             Intent intent = new Intent(view,EdithNote.class);
-            intent.putExtra("notes",HomePage.noteList.get(position));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("notes",HomePage.protectedNotesArray.get(position));
             intent.putExtra("p",position);
             view.getApplicationContext().startActivity(intent);
         }

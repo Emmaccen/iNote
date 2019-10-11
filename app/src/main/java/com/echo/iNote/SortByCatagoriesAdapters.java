@@ -18,13 +18,11 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdapter.ViewHolder>{
-    Context contex;
+public class SortByCatagoriesAdapters extends RecyclerView.Adapter<SortByCatagoriesAdapters.ViewHolder>{
     ArrayList<Notes> notes;
-
-    NotesRecyclerAdapter(ArrayList<Notes> notes){
+    Context contex;
+    SortByCatagoriesAdapters(ArrayList<Notes> notes){
         this.notes = notes;
-
     }
 
     @NonNull
@@ -74,7 +72,6 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
         int five = Color.parseColor("#66bb6a");//green research
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
-            //context here could be used in place of the open note here
             contex = itemView.getContext();
             title = itemView.findViewById(R.id.recy_title_text);
             textBody = itemView.findViewById(R.id.recy_note_body);
@@ -92,13 +89,11 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos;
-                    if(HomePage.isSearchView){
-                        pos = HomePage.noteList.indexOf(notes.get(getAdapterPosition()));
-                        openNote(itemView.getContext(),pos);
-                    }else{
-                        openNote(itemView.getContext(),getAdapterPosition());
-                    }
+                    // using HomePage.noteList.indexOf(notes.get(getAdapterPosition())) .... this helps me to convert the positon of
+                    // the note in the new category list to the position of the of the original note in my noteList..
+                    //this helps all modifications done in categories list to be made to my noteList as well ... okay?
+                    openNote(itemView.getContext(),HomePage.noteList.indexOf(notes.get(getAdapterPosition())));
+                    //Toast.makeText(v.getContext(), "position : " + HomePage.noteList.indexOf(notes.get(getAdapterPosition())), Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -110,20 +105,23 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            int pos;
-            if(HomePage.isSearchView){
-                pos = HomePage.noteList.indexOf(notes.get(getAdapterPosition()));
-            }else {
-                pos = getAdapterPosition();
-            }
+            //HomePage.noteList.indexOf(notes.get(getAdapterPosition())) this converts the menu id to the
+            //position of the real note since sort changes the ordering of the note
+            //so that any modification we do like "delete" will be done to the original note and not the dynamic sorted note
+            // am smart right? no need to say it ... i know i am :)
             menu.setHeaderTitle(contex.getString(R.string.select_an_option));
-            menu.add(pos,100,0,v.getContext().getString(R.string.contextDelete));
-            menu.add(pos,101,1,v.getContext().getString(R.string.contextEdit));
-            menu.add(pos,102,2,v.getContext().getString(R.string.contextShare));
+            menu.add(HomePage.noteList.indexOf(notes.get(getAdapterPosition())),100,0,v.getContext().getString(R.string.contextDelete));
+            menu.add(HomePage.noteList.indexOf(notes.get(getAdapterPosition())),101,1,v.getContext().getString(R.string.contextEdit));
+            menu.add(HomePage.noteList.indexOf(notes.get(getAdapterPosition())),102,2,v.getContext().getString(R.string.contextShare));
+
+            menu.add(HomePage.noteList.indexOf(notes.get(getAdapterPosition())),104,4,"Move To Private");
+
+
         }
 
         public void openNote(Context view,int position){
             Intent intent = new Intent(view,EdithNote.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("notes",HomePage.noteList.get(position));
             intent.putExtra("p",position);
             view.getApplicationContext().startActivity(intent);

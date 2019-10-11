@@ -54,17 +54,37 @@ public class EdithNote extends AppCompatActivity {
     private Toast toast;
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(!isCancelling && !isDeleting && !isSaveIcon){
+            //saveNote();
+//            finish();
+            /* I disabled saving of note in on destroy because on resume in
+            Homepage is called before onDestroy here so there's no way it'll invalidate adapters
+            unless i wanna do some extra work, and i don't, silly ;( (angry face)*/
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         if(!isCancelling && !isDeleting && !isSaveIcon){
-            saveNote();
+           saveNote();
+
+
 //            int orientation = getResources().getConfiguration().orientation;
 //            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
 //                Toast.makeText(this,"landScape Mode",Toast.LENGTH_SHORT).show();
 //            } else {
 //                Toast.makeText(this,"Portrait Mode",Toast.LENGTH_SHORT).show();
 //            }
-            finish();
+            /*I initially called saveNote() and finish() here to save note imidiately the user leaves
+            * the screen, this help just incase the user never comes back to the page again
+            * but i figured it would have been a better practice in on destroy instead*/
+
+
+           finish();
+
         }else{
 
         }
@@ -265,19 +285,29 @@ public class EdithNote extends AppCompatActivity {
     }
     public void saveNote() {
         //String date = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date())
+
+        /*Hard to imagine that i actually let someone talk me into coding a passworded note part
+        * PS : i didn't think it was a big deal until i carelessly messed up my entire code and had to fix bugs for hours :( */
         if ((!isNewNote) && (bundle != null)) {
             //  dateTextView.setText(date);
             pos = bundle.getInt("p");
             if(textTitle.getText().toString().isEmpty() && textBody.getText().toString().isEmpty()){
                 Toast.makeText(this, getString(R.string.toast_message_empty_note_not_saved), Toast.LENGTH_SHORT).show();
             }else if(textTitle.getText().toString().isEmpty()){
-                HomePage.noteList.set(pos,new Notes(getString(R.string.toast_message_note),textBody.getText().toString(),date,note.getColors()));
-
+                if(HomePage.isProtectedNotesView){
+                    HomePage.protectedNotesArray.set(pos,new Notes(getString(R.string.toast_message_note),textBody.getText().toString(),date,note.getColors()));
+                }else{
+                    HomePage.noteList.set(pos,new Notes(getString(R.string.toast_message_note),textBody.getText().toString(),date,note.getColors()));
+                }
                 Toast.makeText(this,getString(R.string.toast_message_saved),Toast.LENGTH_SHORT).show();
             }else if(textBody.getText().toString().isEmpty()){
                 Toast.makeText(this,getString(R.string.toast_message_empty_note_not_saved),Toast.LENGTH_SHORT).show();
             }else{
-                HomePage.noteList.set(pos,new Notes(textTitle.getText().toString(),textBody.getText().toString(),date,note.getColors()));
+                if(HomePage.isProtectedNotesView){
+                    HomePage.protectedNotesArray.set(pos,new Notes(textTitle.getText().toString(),textBody.getText().toString(),date,note.getColors()));
+                }else{
+                    HomePage.noteList.set(pos,new Notes(textTitle.getText().toString(),textBody.getText().toString(),date,note.getColors()));
+                }
                 Toast.makeText(this,getString(R.string.toast_message_saved),Toast.LENGTH_SHORT).show();
             }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -309,19 +339,48 @@ public class EdithNote extends AppCompatActivity {
             if(textTitle.getText().toString().isEmpty() && textBody.getText().toString().isEmpty()){
                 Toast.makeText(this,getString(R.string.toast_message_empty_note_not_saved),Toast.LENGTH_SHORT).show();
             }else if(textTitle.getText().toString().isEmpty()){
-                HomePage.noteList.add(0,new Notes(getString(R.string.toast_message_note),textBody.getText().toString(),date, selectedMenuItemID));
+                if(HomePage.isProtectedNotesView){
+                    HomePage.protectedNotesArray.add(0,new Notes(getString(R.string.toast_message_note),textBody.getText().toString(),date, selectedMenuItemID));
+                }else {
+                    HomePage.noteList.add(0,new Notes(getString(R.string.toast_message_note),textBody.getText().toString(),date, selectedMenuItemID));
+                }
                 Toast.makeText(this,getString(R.string.toast_message_saved),Toast.LENGTH_SHORT).show();
             }else if(textBody.getText().toString().isEmpty()){
                 Toast.makeText(this,R.string.toast_message_empty_note_not_saved,Toast.LENGTH_SHORT).show();
             }else{
-                HomePage.noteList.add(0,new Notes(textTitle.getText().toString(),textBody.getText().toString(),date,selectedMenuItemID));
+                if(HomePage.isProtectedNotesView){
+                    HomePage.protectedNotesArray.add(0,new Notes(textTitle.getText().toString(),textBody.getText().toString(),date,selectedMenuItemID));
+                }else{
+                    HomePage.noteList.add(0,new Notes(textTitle.getText().toString(),textBody.getText().toString(),date,selectedMenuItemID));
+                }
                 Toast.makeText(this,getString(R.string.toast_message_new_note_added),Toast.LENGTH_SHORT).show();
             }
         }
-        saveNotesToMemory();
+        // i don't care which conditions are met, save the right one anyway ;(
+        saveNotesToMemory(); savePrivateNotesToMemory();
+    }
+
+    private void savePrivateNotesToMemory() {
+        HomePage.protectedNotesPref = getSharedPreferences(HomePage.PRIVATE_NOTES_PREFERENCE_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = HomePage.protectedNotesPref.edit();
+        Gson json = new Gson();
+        String privateArray = json.toJson(HomePage.protectedNotesArray);
+        editor.putString(HomePage.ARRAY_OF_PRIVATE_NOTES_KEY,privateArray);
+        editor.apply();
+    }
+
+    public void saveDeletedNoteToMemory(){
+        HomePage.recycleBinPreference = getSharedPreferences(
+                HomePage.MY_RECYCLE_PREFERENCE_KEY,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = HomePage.recycleBinPreference.edit();
+        Gson jsonString = new Gson();
+        String note = jsonString.toJson(HomePage.recycleBinArrayList);
+        editor.putString(HomePage.ARRAY_OF_RECYCLED_NOTE_KEY,note);
+        editor.apply();
     }
     public void saveNotesToMemory(){
-        HomePage.sharedPreferences = getSharedPreferences(HomePage.MY_PREFERENCE, Context.MODE_PRIVATE);
+        HomePage.sharedPreferences = getSharedPreferences(
+                HomePage.MY_PREFERENCE_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = HomePage.sharedPreferences.edit();
         Gson gson = new Gson();
         String jsonString = gson.toJson(HomePage.noteList);
@@ -338,12 +397,25 @@ public class EdithNote extends AppCompatActivity {
             Toast.makeText(this,getString(R.string.toast_message_unsaved_note), Toast.LENGTH_SHORT).show();
         }else{
             int deletionPosition = bundle.getInt("p");
-            isDeleting = true;
-            HomePage.noteList.remove(deletionPosition);
-            Toast.makeText(this,getString(R.string.toast_message_deleted_successfully), Toast.LENGTH_SHORT).show();
-            finish();
+            if(HomePage.showRecycleBinMenuOption && !HomePage.isProtectedNotesView){
+                HomePage.recycleBinArrayList.add(0,HomePage.noteList.get(deletionPosition));
+                saveDeletedNoteToMemory();
+                //also remove form noteList and saveIt below
+            }if(HomePage.isProtectedNotesView){
+                isDeleting = true;
+                HomePage.protectedNotesArray.remove(deletionPosition);
+                Toast.makeText(this,getString(R.string.toast_message_deleted_successfully), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"Deleted Private Notes Are Not Recyclable", Toast.LENGTH_LONG).show();
+                savePrivateNotesToMemory();
+                finish();
+            }if(!HomePage.isProtectedNotesView){
+                isDeleting = true;
+                HomePage.noteList.remove(deletionPosition);
+                Toast.makeText(this,getString(R.string.toast_message_deleted_successfully), Toast.LENGTH_SHORT).show();
+                saveNotesToMemory();
+                finish();
+            }
         }
-        saveNotesToMemory();
     }
 
     @Override
@@ -377,12 +449,29 @@ public class EdithNote extends AppCompatActivity {
             clearNote();
         }else if(id == R.id.action_delete){
             deleteNote();
-        }else if(id == R.id.action_save){
+        }else if(id == R.id.action_reader_mode){
+            String title;
+            if(textTitle.getText().toString().isEmpty()){
+                title = "Note";
+            }else {
+                title = textTitle.getText().toString();
+            }
+            startActivity(new Intent(this,NoteReaderActivity.class)
+            .putExtra("title",title
+            ).putExtra("text",textBody.getText().toString()));
+        }
+        else if(id == R.id.action_save){
             isSaveIcon = true;
             // isSaveIcon here is set to true to avoid
-            //saving the note twice ( here in the menu and up the onPause)
+            //saving the note twice ( here in the menu and up the onDestroy)
             saveNote();
             finish();
+        }else if (id == R.id.action_reminder){
+            if(bundle != null){
+                int noteIntentExtra = bundle.getInt("note");
+                ReminderNotification.notify(this,textTitle.getText().toString(),
+                        textBody.getText().toString(),0,intent);
+            }
         }
         return super.onOptionsItemSelected(item);
     }

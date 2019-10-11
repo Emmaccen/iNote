@@ -3,7 +3,7 @@ package com.echo.iNote;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.text.Layout;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +58,7 @@ RecycleBinAdapter(ArrayList<Notes> notes){
         return recyclableNotes.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
         TextView title;
         TextView textBody;
         TextView date;
@@ -81,6 +81,8 @@ RecycleBinAdapter(ArrayList<Notes> notes){
             cardView = itemView.findViewById(R.id.recy_cardview);
             category = itemView.findViewById(R.id.recy_category_text);
             circleImageView = itemView.findViewById(R.id.circleImageView);
+            frameLayout = itemView.findViewById(R.id.recy_frame_layout);
+            frameLayout.setOnCreateContextMenuListener(this);
             if(HomePage.showCategoriesView){
                 circleImageView.setVisibility(View.VISIBLE);
             }else{
@@ -93,6 +95,14 @@ RecycleBinAdapter(ArrayList<Notes> notes){
             circleImageView.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_OVER);
             category.setTextColor(color);
             category.setText(categoryText);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            contextMenu.setHeaderTitle(context.getString(R.string.select_an_option));
+            /*context menu params (groupID, itemID, menuPosition/Arrangement, StringResource*/
+            contextMenu.add(getAdapterPosition(),10,0,"Restore");
+            contextMenu.add(getAdapterPosition(),11,1,context.getString(R.string.contextDelete));
         }
     }
 }
