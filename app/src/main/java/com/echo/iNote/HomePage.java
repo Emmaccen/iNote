@@ -9,9 +9,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
@@ -26,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import android.text.Editable;
@@ -43,14 +47,20 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -67,6 +77,7 @@ public class HomePage extends AppCompatActivity
     static final int CONTACT_REQUEST_CODE = 31;
     FirebaseFirestore fireStore;
     Intent intent;
+    String test;
 
     CircleImageView navProfileImage;
     DocumentReference documentReference;
@@ -110,6 +121,7 @@ public class HomePage extends AppCompatActivity
     private PrivateNotesAdapter privateAdapter;
     private FirebaseAuth firebaseAuth;
     FirebaseUser user;
+    private View navigationViewHeaderView;
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -275,8 +287,14 @@ public class HomePage extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //check if app is being installed for the first time
+        if(!hasShownWelcomeScreen()){
+            startActivity(new Intent(this,OnBoardingScreen.class)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        }
+
         /*
-        this code toggles the rateMe dialoge
+        this code toggles the rateMe dialogue
 
         AppRate.with(this)
                 .setInstallDays(1); //default val 10;
@@ -298,14 +316,14 @@ public class HomePage extends AppCompatActivity
        /* navProfileImage =  view.findViewById(R.id.nav_profile_image);
         navProfileImage.setBackgroundColor(getColor(R.color.colorPrimaryDark));*/
 
-
-
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         loadNotesFromMemory();
         loadNotesFromRecycleBin();
         loadPrivateNotesFromMemory();
+        syncNotesFromCloud();
+
+
 
        /* TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         String countryIso = telephonyManager.getSimCountryIso().toUpperCase();
@@ -338,10 +356,10 @@ public class HomePage extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        View navigationViewHeaderView = navigationView.getHeaderView(0);
-       navProfileImage =  navigationViewHeaderView.findViewById(R.id.nav_profile_image);
+        navigationViewHeaderView = navigationView.getHeaderView(0);
+        navProfileImage =  navigationViewHeaderView.findViewById(R.id.nav_profile_image);
         navHeaderEmail = navigationViewHeaderView.findViewById(R.id.nav_header_email);
-       loadProfile();
+        loadProfile();
 
     }
 
@@ -362,7 +380,7 @@ public class HomePage extends AppCompatActivity
                             if(imageUrl.equals("default")){
                                 navProfileImage.setImageDrawable(getDrawable(R.drawable.user_profile_picture));
                             }else{
-
+//else set what they've got in the database
                             }
                         }
                     }
@@ -566,7 +584,17 @@ searchMenu.setVisible(false);
                             recycleBinAdapter.notifyDataSetChanged();
                             saveRecycleBinNotesToMemory();
                         }
-                    }else {
+                    }else if(isProtectedNotesView){
+                        if(protectedNotesArray.isEmpty()){
+                            Toast.makeText(HomePage.this,getString(R.string.toast_no_notes_found), Toast.LENGTH_SHORT).show();
+                        }else{
+                            protectedNotesArray.clear();
+                            privateAdapter.notifyDataSetChanged();
+                            savePrivateNoteToMemory();
+                        }
+                    }
+
+                    else {
                         if(noteList.isEmpty()){
                             Toast.makeText(HomePage.this,getString(R.string.toast_no_notes_found), Toast.LENGTH_SHORT).show();
                         }else {
@@ -694,7 +722,10 @@ searchMenu.setVisible(false);
         }else if(id == R.id.nav_log_out){
             if(user != null){
                 firebaseAuth.signOut();
-//                recreate();
+                recreate();
+                startActivity(new Intent(this,LoginOrSignUp.class)
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK));
+                Toast.makeText(this, "Logged Out", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -792,7 +823,12 @@ if(passwordInput.length() == 4 && passwordInput.getText().toString().equals(getP
                     Manifest.permission.READ_CONTACTS},CONTACT_REQUEST_CODE);
         }
     }
-
+public boolean hasShownWelcomeScreen(){
+        OnBoardingScreen.preferences = getSharedPreferences
+                (OnBoardingScreen.WELCOME_PREFERENCE_KEY,Context.MODE_PRIVATE);
+       return OnBoardingScreen.preferences.getBoolean
+               (OnBoardingScreen.WELCOME_SCREEN_KEY,false);
+}
     public void loadNotesFromMemory(){
         sharedPreferences = getSharedPreferences(MY_PREFERENCE_KEY, Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -912,4 +948,72 @@ public void securityOkay(View view){
 
     }
 }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        saveNotesToCloud();
+    }
+
+    public void saveNotesToCloud(){
+        if(user != null){
+            Gson gson = new Gson();
+            String notes = gson.toJson(noteList);
+            String privateNotes = gson.toJson(protectedNotesArray);
+            Map<String,String> allNotes = new HashMap<>();
+            allNotes.put("notes",notes);
+            allNotes.put("privateNotes",privateNotes);
+            fireStore.collection("Notes").document(user.getUid()).set(allNotes);
+        }
+}
+public void syncNotesFromCloud(){
+        if(user != null){
+            DocumentReference cloudNotes = fireStore.collection("Notes").document(user.getUid());
+            cloudNotes.get().addOnCompleteListener(
+                    new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if(task.isSuccessful() && task.getResult() != null){
+                                CloudNotes cloudNotes = task.getResult().toObject(CloudNotes.class);
+                                String one = cloudNotes.getNotes();
+                                String two = cloudNotes.getPrivateNotes();
+                                Gson gson = new Gson();
+                                Type noteType = new TypeToken<ArrayList<Notes>>(){}.getType();
+                                ArrayList<Notes> notesPlaceHolder =  gson.fromJson(one,noteType);
+                                ArrayList<Notes> privateNotesHolder =   gson.fromJson(two,noteType);
+/*Just in case someday one dutch bag someday needs to manage my codebase, i'll do you a favour by explaining
+* whats going on below, first we use a set with hashAndEquals defined in its class to get the notes from the dataBase
+* then we add the notes on the device to it, then the set checks for any duplicate note and removes them
+* making it a single note, in other words .. Cloud notes + mobile notes combined*/
+
+                                Set<Notes> filter = new HashSet<>(notesPlaceHolder);
+                                filter.addAll(noteList);
+                                Set<Notes> privateFilter = new HashSet<>(privateNotesHolder);
+                                privateFilter.addAll(protectedNotesArray);
+                                /*we clear noteList(mobile version) in order to add the newly filtered values*/
+                                noteList.clear();noteList.addAll(filter);
+                                protectedNotesArray.clear();protectedNotesArray.addAll(privateFilter);
+
+                               saveNotesToMemory();
+                               savePrivateNoteToMemory();
+                               adapter.notifyDataSetChanged();
+                               privateAdapter.notifyDataSetChanged();
+
+
+                            }
+
+                        }
+                    }
+            );
+
+        }
+}
+public class CloudTask extends AsyncTask<Void,Void,Void>{
+
+    @Override
+    protected Void doInBackground(Void... voids) {
+        return null;
+    }
+}
+
 }

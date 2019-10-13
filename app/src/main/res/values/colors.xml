@@ -4,5 +4,8 @@
     <color name="colorPrimaryDark">#455A64</color>
     <color name="colorAccent">#9E9E9E</color>
 
+<color name="senderColor">#229E9E9E</color>
+
+    <color name="receiver_color">#fff</color>
     <color name="black_overlay">#66000000</color>
 </resources>

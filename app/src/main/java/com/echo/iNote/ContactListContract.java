@@ -19,19 +19,19 @@ public class ContactListContract{
         return Objects.hash(getContactName(), getContactPhoneNumber());
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "Name : " + contactName + " Number : " + contactPhoneNumber
-                +"\n";
-    }
-
     String contactName;
     String contactPhoneNumber;
 
     public ContactListContract(String contactName,String contactPhoneNumber){
         this.contactName = contactName;
         this.contactPhoneNumber = contactPhoneNumber;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Name : " + contactName + "\n"
+                + "Phone Number : " + contactPhoneNumber;
     }
 
     public String getContactName() {

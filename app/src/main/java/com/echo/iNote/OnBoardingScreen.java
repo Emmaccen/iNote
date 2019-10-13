@@ -1,8 +1,13 @@
 package com.echo.iNote;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.transition.Slide;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
@@ -10,12 +15,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class OnBoardingScreen extends AppCompatActivity {
 ArrayList<WelcomeScreenContract> list;
 WelcomeScreenViewPager adapter;
+static SharedPreferences preferences;
+static final String WELCOME_SCREEN_KEY = "welcome_screen_key";
+static final String WELCOME_PREFERENCE_KEY = "welcome_pref_key";
 ViewPager viewPager;
 LinearLayout linear;
 Button next,prev;
@@ -23,6 +32,8 @@ Button next,prev;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding_screen);
+        ShownOnboardingScreen();
+
         list = new ArrayList<>();
         viewPager  = findViewById(R.id.welcome_screen_view_pager);
         linear = findViewById(R.id.dots_layout);
@@ -32,7 +43,7 @@ Button next,prev;
         initializeDots(0);
         list.add(new WelcomeScreenContract("Synchronization","this is where the description goes" +
                 "this notepad is created by oriola emmmanuel and ive got a co founder",R.drawable.app_drawer_book));list.add(new WelcomeScreenContract("Realtime DataBase","this is where the description goes" +
-                "this notepad is created by oriola emmmanuel and ive got a co founder",R.drawable.app_drawer_book));list.add(new WelcomeScreenContract("Chat","this is where the description goes" +
+                "this notepad is created by oriola emmmanuel and ive got a co founder",R.drawable.user_profile_picture));list.add(new WelcomeScreenContract("Chat","this is where the description goes" +
                 "this notepad is created by oriola emmmanuel and ive got a co founder",R.drawable.app_drawer_book));
                 adapter = new WelcomeScreenViewPager(list,this);
                 viewPager.setAdapter(adapter);
@@ -52,9 +63,10 @@ Button next,prev;
                                    prev.setVisibility(View.VISIBLE);
                                }
                                if(position == 2){
-                                   next.setVisibility(View.INVISIBLE);
+//                                   next.setVisibility(View.INVISIBLE);
+                                   next.setText("Finish");
                                 }else{
-                                   next.setVisibility(View.VISIBLE);
+                                   next.setText("Next");
                                }
                             }
 
@@ -66,6 +78,13 @@ Button next,prev;
                 );
         }
 
+    private void ShownOnboardingScreen() {
+        preferences = getSharedPreferences(WELCOME_PREFERENCE_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(WELCOME_SCREEN_KEY,true);
+        editor.apply();
+    }
+
 
     public void initializeDots(int position){
         TextView [] dots  = new TextView[3];
@@ -75,7 +94,7 @@ Button next,prev;
             /*TODO
             *  remember to set a flag on the Html,fromHtml code below(remove deprecation)*/
             dots[i].setText(Html.fromHtml("&#8226;"));
-            dots[i].setTextColor(getResources().getColor(R.color.colorAccent));
+            dots[i].setTextColor(getResources().getColor(R.color.colorAccent, Resources.getSystem().newTheme()));
             dots[i].setTextSize(30);
             linear.addView(dots[i]);
     }
@@ -84,19 +103,26 @@ Button next,prev;
     public void onNextButtonSelected(View view){
         if(viewPager.getCurrentItem() <2){
             viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-        }if(viewPager.getCurrentItem() == 2){
-            next.setVisibility(View.INVISIBLE);
-        }if(prev.getVisibility() == View.INVISIBLE){
-            prev.setVisibility(View.VISIBLE);
+        }else{
+            startActivity(new Intent(this,LoginOrSignUp.class)
+            .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK));
         }
-    }
+        if(viewPager.getCurrentItem() == 2){
+            next.setText("Finish");
+        }else {
+            next.setText("Next");
+        }
+        if(prev.getVisibility() == View.INVISIBLE){
+                prev.setVisibility(View.VISIBLE);
+            }
+        }
     public void onPrevButtonPressed(View view){
-        if(viewPager.getCurrentItem() > 0){
+        if(viewPager.getCurrentItem() == 2){
+            next.setText("Next");
+        }if(viewPager.getCurrentItem() > 0){
             viewPager.setCurrentItem(viewPager.getCurrentItem() -1);
         }if(viewPager.getCurrentItem() == 0){
             prev.setVisibility(View.INVISIBLE);
-        }if(next.getVisibility() == View.INVISIBLE){
-            next.setVisibility(View.VISIBLE);
         }
     }
 

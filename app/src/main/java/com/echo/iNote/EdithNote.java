@@ -14,9 +14,11 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
@@ -471,6 +473,8 @@ public class EdithNote extends AppCompatActivity {
                 int noteIntentExtra = bundle.getInt("note");
                 ReminderNotification.notify(this,textTitle.getText().toString(),
                         textBody.getText().toString(),0,intent);
+            }else{
+                Toast.makeText(this, getString(R.string.toast_message_unsaved_note), Toast.LENGTH_SHORT).show();
             }
         }
         return super.onOptionsItemSelected(item);

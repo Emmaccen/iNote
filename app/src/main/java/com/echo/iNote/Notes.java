@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Notes implements Parcelable {
     String title;
@@ -11,6 +12,23 @@ public class Notes implements Parcelable {
     static Notes noteClass;
     static List<Notes> notesArray;
     String date;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Notes)) return false;
+        Notes notes = (Notes) o;
+        return getColors() == notes.getColors() &&
+                Objects.equals(getTitle(), notes.getTitle()) &&
+                Objects.equals(getTextBody(), notes.getTextBody()) &&
+                Objects.equals(getDate(), notes.getDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTitle(), getTextBody(), getDate(), getColors());
+    }
+
     int colors;
     protected Notes(Parcel in) {
         title = in.readString();

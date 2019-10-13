@@ -4,6 +4,7 @@ public class UserContract {
     String email;
     String phoneNumber;
     String image;
+    String userId;
 
     public String getEmail() {
         return email;
@@ -27,5 +28,11 @@ public class UserContract {
 
     public void setImage(String image) {
         this.image = image;
+    }
+public void setUserId(String userId){
+        this.userId = userId;
+}
+public String getUserId(){
+        return userId ;
     }
 }
