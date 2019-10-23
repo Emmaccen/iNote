@@ -1,27 +1,33 @@
 package com.echo.iNote;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -298,8 +304,12 @@ public class EdithNote extends AppCompatActivity {
             }else if(textTitle.getText().toString().isEmpty()){
                 if(HomePage.isProtectedNotesView){
                     HomePage.protectedNotesArray.set(pos,new Notes(getString(R.string.toast_message_note),textBody.getText().toString(),date,note.getColors()));
+                    HomePage.protectedNotesArray.add(0, HomePage.protectedNotesArray.get(pos));
+                    HomePage.protectedNotesArray.remove(pos);
                 }else{
                     HomePage.noteList.set(pos,new Notes(getString(R.string.toast_message_note),textBody.getText().toString(),date,note.getColors()));
+                    HomePage.noteList.add(0, HomePage.noteList.get(pos));
+                    HomePage.noteList.remove(pos);
                 }
                 Toast.makeText(this,getString(R.string.toast_message_saved),Toast.LENGTH_SHORT).show();
             }else if(textBody.getText().toString().isEmpty()){
@@ -307,8 +317,12 @@ public class EdithNote extends AppCompatActivity {
             }else{
                 if(HomePage.isProtectedNotesView){
                     HomePage.protectedNotesArray.set(pos,new Notes(textTitle.getText().toString(),textBody.getText().toString(),date,note.getColors()));
+                    HomePage.protectedNotesArray.add(0, HomePage.protectedNotesArray.get(pos));
+                    HomePage.protectedNotesArray.remove(pos);
                 }else{
                     HomePage.noteList.set(pos,new Notes(textTitle.getText().toString(),textBody.getText().toString(),date,note.getColors()));
+                    HomePage.noteList.add(0, HomePage.noteList.get(pos));
+                    HomePage.noteList.remove(pos);
                 }
                 Toast.makeText(this,getString(R.string.toast_message_saved),Toast.LENGTH_SHORT).show();
             }
@@ -476,8 +490,107 @@ public class EdithNote extends AppCompatActivity {
             }else{
                 Toast.makeText(this, getString(R.string.toast_message_unsaved_note), Toast.LENGTH_SHORT).show();
             }
+        } else if (id == R.id.send_to_contact) {
+            //check if we have permission to read contacts
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                ArrayList<Notes> notes = new ArrayList<>();
+                String title = textTitle.getText().toString();
+                String body = textBody.getText().toString();
+                notes.add(new Notes(title, body, date, one));
+                if (notes.get(0).getTextBody().isEmpty()) {
+                    Toast.makeText(this, "Empty Note", Toast.LENGTH_SHORT).show();
+                } else if (notes.get(0).getTitle().isEmpty() && !notes.get(0).getTextBody().isEmpty()) {
+                    notes.set(0, new Notes("Note", body, date, one));
+                    Intent intent = new Intent(this, ChatActivity.class);
+                    intent.putExtra("message", notes.get(0));
+                    intent.putExtra("messageType", "direct");
+                    startActivity(intent);
+                    saveNote();
+                } else {
+                    Intent intent = new Intent(this, ChatActivity.class);
+                    intent.putExtra("message", notes.get(0));
+                    intent.putExtra("messageType", "direct");
+                    startActivity(intent);
+                    saveNote();
+                }
+
+            } else {
+                requestPermissions();
+            }
+
+        } else if (id == R.id.send_as_general) {
+            shareMessage();
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void shareMessage() {
+        String message = textTitle.getText().toString() +
+                "\n\n" + textBody.getText().toString();
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, message);
+        sendIntent.setType("text/plain");
+        if (sendIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(sendIntent);
+        }
+    }
+
+    private void requestPermissions() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.READ_CONTACTS)) {
+            /*TODO
+             *  this is invoked when user cancels your permission request and you need to explain why you needed the permission
+             *  */
+            permissionRationale();
+        } else {
+            //request permission
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.READ_CONTACTS}, HomePage.CONTACT_REQUEST_CODE);
+        }
+    }
+
+    private void permissionRationale() {
+        AlertDialog.Builder permissionMessage = new AlertDialog.Builder(this);
+        permissionMessage.setMessage("We noticed you've recently disabled the permission " +
+                "for iNote to access your contacts, some authorizations are needed for this function to work," +
+                " we promise to never pick or use your information without your consent.");
+        permissionMessage.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+
+                startActivity(intent);
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        permissionMessage.create().show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == HomePage.CONTACT_REQUEST_CODE) {//sad face :{
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startActivity(new Intent(this, ChatActivity.class));
+            } else {
+                Toast.makeText(this, "permission denied", Toast.LENGTH_SHORT).show();
+                requestPermissions();
+                //requestPermission again to enter the rationale part, (winks!)
+
+                /*THE METHOD ABOVE WILL NEVER BE SHOWN ! CUZ YOU'D HAVE AUTO SAVED THE NOTE AND THE PAGE WOULD HAVE CLOSED ACCORDING
+                 * TO YOUR CODE, SO USE YOUR BRAIN MAN (angry face ;(    stop wasting coding energy*/
+
+            }
+        }
+
+    }
 }

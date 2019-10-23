@@ -10,5 +10,4 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/contact_list_layout"
         android:id="@+id/contacts_recyc_view"/>
-
 </FrameLayout>

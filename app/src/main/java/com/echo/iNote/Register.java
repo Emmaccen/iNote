@@ -1,8 +1,6 @@
 package com.echo.iNote;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +12,9 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,9 +32,20 @@ public class Register extends AppCompatActivity {
     ConnectivityManager connectivityManager;
     NetworkStateUpdater networkReceiver;
 
+    private ProgressDialog progressDialog;
+
     TextView registrationEmail, registrationPhoneNumber, registrationPassword;
     Toast toast;
     FirebaseAuth firebaseAuth;
+
+    @Override
+    public void onBackPressed() {
+        if (progressDialog != null) {
+            progressDialog.cancel();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     protected void onDestroy() {
@@ -47,7 +59,6 @@ public class Register extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
         /*Don't forget to implement the networking part in the Async background task later
          * if you do? am gonna kill me */
 
@@ -91,15 +102,22 @@ public class Register extends AppCompatActivity {
     }
 
     public void registerNewUser(final View view) {
+        HideKeyboard.hideKeyboard(this);
         if (connectivityManager != null) {
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setTitle("Processing...");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
                 final String email = registrationEmail.getText().toString().trim();
                 final String phoneNumber = registrationPhoneNumber.getText().toString().trim();
                 final String password = registrationPassword.getText().toString().trim();
                 if (email.isEmpty() || password.isEmpty() || phoneNumber.isEmpty()) {
+                    progressDialog.cancel();
                     Snackbar.make(view, getString(R.string.all_fields_are_required), Snackbar.LENGTH_SHORT).show();
                 } else if ((password.length() <= 9 && !(password.length() >= 6))) {
+                    progressDialog.cancel();
                     Snackbar.make(view, "Password must be at least 6 characters long", Snackbar.LENGTH_SHORT).show();
                 } else {
                     firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(
@@ -121,6 +139,7 @@ public class Register extends AppCompatActivity {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {
                                                             if (task.isSuccessful()) {
+                                                                progressDialog.cancel();
                                                                 toast = Toast.makeText(Register.this, "Account Created Successfully", Toast.LENGTH_SHORT);
                                                                 toast.setGravity(Gravity.CENTER, 0, 0);
                                                                 toast.show();
@@ -133,6 +152,7 @@ public class Register extends AppCompatActivity {
                                                     new OnFailureListener() {
                                                         @Override
                                                         public void onFailure(@NonNull Exception e) {
+                                                            progressDialog.cancel();
                                                             Snackbar.make(view, "Something Went Wrong", Snackbar.LENGTH_LONG).show();
                                                             Toast.makeText(Register.this, "Error : " + e, Toast.LENGTH_SHORT).show();
                                                         }
@@ -141,6 +161,7 @@ public class Register extends AppCompatActivity {
                                         }
                                     } else {
                                         //If unable to register user
+                                        progressDialog.cancel();
                                         Snackbar.make(view, "Something Went Wrong, please review filled details", Snackbar.LENGTH_LONG).show();
                                     }
                                 }

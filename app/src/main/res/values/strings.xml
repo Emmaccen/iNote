@@ -40,7 +40,6 @@
     <string name="discard_changes">Discard Changes</string>
     <string name="cancel">Cancel</string>
     <string name="send_as_mail">Send as mail</string>
-    <string name="backup_notes">Backup Notes</string>
     <string name="delete_all_notes">Delete all notes</string>
     <string name="select_multiple">Select Multiple</string>
     <string name="delete_all">Delete all notes</string>
@@ -72,7 +71,7 @@
     <string name="update_on_notif">Notify me of new updates</string>
     <string name="update_off_notif">Do not notify me of new updates</string>
     <string name="update_notif">Notification</string>
-    <string name="show_note_categories">Show note categories</string>
+    <string name="show_note_categories">Show note category Colors</string>
     <string name="night_mode_on">Night mode enabled</string>
     <string name="night_mode_off">Night mode disabled</string>
     <string name="recycle_on">Enabled</string>
@@ -141,5 +140,13 @@
     <string name="all_fields_are_required">All fields are required !</string>
     <string name="skip">Skip</string>
     <string name="title_activity_message">MessageActivity</string>
+    <string name="send_to_contact">Send To Contact</string>
+    <string name="please_check_your_internet_connection">Please check your internet connection</string>
+    <string name="no_user_account_detected">No User Account Detected...</string>
+    <string name="share_multi_choice">Share ( Multi-Choice )</string>
+    <string name="passowrd_must_be">Password Must Be At least 6 Characters Long</string>
+    <string name="password_mismatch">Password Mismatch</string>
+    <string name="email_sent">Password Reset Email Sent</string>
+    <string name="Home">home</string>
 
 </resources>

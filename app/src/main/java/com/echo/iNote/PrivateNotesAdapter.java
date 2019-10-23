@@ -123,7 +123,11 @@ public class PrivateNotesAdapter extends RecyclerView.Adapter<PrivateNotesAdapte
             menu.add(pos,100,0,v.getContext().getString(R.string.contextDelete));
             menu.add(pos,101,1,v.getContext().getString(R.string.contextEdit));
             menu.add(pos,102,2,v.getContext().getString(R.string.contextShare));
-            menu.add(pos,103,3,"Move To Notes");
+
+            menu.add(pos, 106, 3, v.getContext().getString(R.string.share_multi_choice));
+
+            menu.add(pos, 103, 4, "Move To Notes");
+            menu.add(pos, 105, 5, "Send To Contact");
 
 
         }

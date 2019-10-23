@@ -4,15 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -114,7 +115,10 @@ public class SortByCatagoriesAdapters extends RecyclerView.Adapter<SortByCatagor
             menu.add(HomePage.noteList.indexOf(notes.get(getAdapterPosition())),101,1,v.getContext().getString(R.string.contextEdit));
             menu.add(HomePage.noteList.indexOf(notes.get(getAdapterPosition())),102,2,v.getContext().getString(R.string.contextShare));
 
+            menu.add(HomePage.noteList.indexOf(notes.get(getAdapterPosition())), 106, 2, v.getContext().getString(R.string.share_multi_choice));
+
             menu.add(HomePage.noteList.indexOf(notes.get(getAdapterPosition())),104,4,"Move To Private");
+            menu.add(HomePage.noteList.indexOf(notes.get(getAdapterPosition())), 105, 5, "Send To Contact");
 
 
         }

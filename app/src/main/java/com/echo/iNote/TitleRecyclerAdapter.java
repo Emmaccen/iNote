@@ -4,14 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -116,7 +117,10 @@ Context contex;
             menu.add(pos,101,1, v.getContext().getString(R.string.contextEdit));
             menu.add(pos,102,2, v.getContext().getString(R.string.contextShare));
 
+            menu.add(pos, 106, 3, v.getContext().getString(R.string.share_multi_choice));
+
             menu.add(pos,104,4,"Move To Private");
+            menu.add(pos, 105, 5, "Send To Contact");
         }
     }
     public void openNote(Context view,int position){

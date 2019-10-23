@@ -1,9 +1,5 @@
 package com.echo.iNote;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.transition.Slide;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +11,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import java.util.ArrayList;
 
@@ -41,10 +39,9 @@ Button next,prev;
         prev = findViewById(R.id.welcome_prev_button);
         prev.setVisibility(View.INVISIBLE);
         initializeDots(0);
-        list.add(new WelcomeScreenContract("Synchronization","this is where the description goes" +
-                "this notepad is created by oriola emmmanuel and ive got a co founder",R.drawable.app_drawer_book));list.add(new WelcomeScreenContract("Realtime DataBase","this is where the description goes" +
-                "this notepad is created by oriola emmmanuel and ive got a co founder",R.drawable.user_profile_picture));list.add(new WelcomeScreenContract("Chat","this is where the description goes" +
-                "this notepad is created by oriola emmmanuel and ive got a co founder",R.drawable.app_drawer_book));
+        list.add(new WelcomeScreenContract("Cloud Storage", "Use your iNote integrated with real time cloud storage and ensure ease of access across all your devices", R.drawable.welcome_cloud_sync));
+        list.add(new WelcomeScreenContract("In-App Note Sharing", "Took a note and want your friends and family to have them ? we've got you covered.", R.drawable.welcome_in_app_messaging));
+        list.add(new WelcomeScreenContract("Log In", "Create an account and you're just a step away from never losing a single note", R.drawable.welcome_log_in));
                 adapter = new WelcomeScreenViewPager(list,this);
                 viewPager.setAdapter(adapter);
                 viewPager.addOnPageChangeListener(

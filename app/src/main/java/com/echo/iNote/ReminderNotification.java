@@ -2,6 +2,7 @@ package com.echo.iNote;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -48,7 +49,7 @@ public class ReminderNotification {
 
         // This image is used as the notification's large icon (thumbnail).
         // TODO: Remove this if your notification has no relevant thumbnail.
-        final Bitmap picture = BitmapFactory.decodeResource(res, R.drawable.app_drawer_book);
+        final Bitmap picture = BitmapFactory.decodeResource(res, R.mipmap.app_logo);
 
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
@@ -119,11 +120,16 @@ public class ReminderNotification {
     private static void notify(final Context context, final Notification notification) {
         final NotificationManager nm = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    NOTIFICATION_TAG, "Channel O", NotificationManager.IMPORTANCE_DEFAULT
+            );
+            nm.createNotificationChannel(channel);
+            nm.notify(NOTIFICATION_TAG, 0, notification);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR ) {
             nm.notify(NOTIFICATION_TAG, 0, notification);
-
         }
-
         else {
             nm.notify(NOTIFICATION_TAG.hashCode(), notification);
         }

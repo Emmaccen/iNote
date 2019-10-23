@@ -37,14 +37,15 @@
     <PreferenceCategory app:title="@string/sync_header">
 
         <SwitchPreferenceCompat
-            app:defaultValue="false"
+            app:defaultValue="true"
             app:icon="@drawable/ic_sync_black_24dp"
             app:key="sync"
             app:title="@string/auto_sync_notes" />
 
         <SwitchPreferenceCompat
+            app:defaultValue="false"
             app:dependency="sync"
-            app:key="attachment"
+            app:key="wifi"
             app:summaryOff="@string/sync_on_any"
             app:summaryOn="@string/sync_on_wifi"
             app:title="@string/sync_network_config" />
@@ -53,6 +54,7 @@
 <PreferenceCategory app:title="@string/update"
     app:icon="@drawable/ic_about_24dp">
     <SwitchPreferenceCompat
+        app:defaultValue="true"
         app:key="update"
         app:summaryOff="@string/update_off_notif"
         app:summaryOn="@string/update_on_notif"
@@ -69,12 +71,14 @@
     app:key="catView"
     app:title="@string/show_note_categories"
     app:useSimpleSummaryProvider="true" />
-<SwitchPreferenceCompat app:title="Toggle Night-Mode"
-    app:icon="@drawable/ic_night_24dp"
-    app:key="night"
-    app:summaryOn="@string/night_mode_on"
-    app:summaryOff="@string/night_mode_off">
-</SwitchPreferenceCompat>
+
+    <!--TODO don't forget to include night mode in upcoming updates-->
+    <!--<SwitchPreferenceCompat app:title="Toggle Night-Mode"
+        app:icon="@drawable/ic_night_24dp"
+        app:key="night"
+        app:summaryOn="@string/night_mode_on"
+        app:summaryOff="@string/night_mode_off">
+    </SwitchPreferenceCompat>-->
 <SwitchPreferenceCompat app:title="Recycle bin"
     app:icon="@drawable/ic_recycle_bin_24dp"
     app:defaultValue="@string/recycle_off"

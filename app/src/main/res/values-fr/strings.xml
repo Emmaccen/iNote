@@ -3,7 +3,6 @@
     <string name="app_name">iNote</string>
     <string name="about">Sur</string>
     <string name="action_settings">Réglages</string>
-    <string name="backup_notes">Sauvegarde</string>
     <string name="cancel">Annuler</string>
     <string name="cannot_perform_restore">Impossible d\'effectuer une restauration sur une nouvelle note</string>
     <string name="category_family">Famille</string>

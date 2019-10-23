@@ -1,6 +1,7 @@
 package com.echo.iNote;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,57 +9,53 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
-import android.os.Handler;
 import android.preference.PreferenceManager;
-
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -113,6 +110,10 @@ public class HomePage extends AppCompatActivity
    static boolean showCategoriesView;
    static boolean showRecycleBinMenuOption;
    static boolean isRecycleBinView;
+    static boolean autoSync;
+    static boolean isWifi;
+    static boolean isWifiNet;
+    static boolean isMobileNet;
     private MenuItem restoreAllMenu;
     private View createPasswordView;
     private View inputPasswordView;
@@ -122,6 +123,8 @@ public class HomePage extends AppCompatActivity
     private FirebaseAuth firebaseAuth;
     FirebaseUser user;
     private View navigationViewHeaderView;
+    private ConnectivityManager connection;
+    private boolean loadedProfile;
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -197,11 +200,42 @@ public class HomePage extends AppCompatActivity
             }else{
                 Toast.makeText(this, "Generate A Private Key First", Toast.LENGTH_SHORT).show();
             }
+        } else if (id == 105) {
+            //check if we have permission to read contacts
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent(this, ChatActivity.class);
+                if (isProtectedNotesView) {
+                    intent.putExtra("message", protectedNotesArray.get(selectedNotePosition));
+                } else {
+                    intent.putExtra("message", noteList.get(selectedNotePosition));
+                }
+                intent.putExtra("messageType", "direct");
+                startActivity(intent);
+            } else {
+                requestPermissions();
+            }
+        } else if (id == 106) {
+            if (isProtectedNotesView) {
+                sendMultiChoice(protectedNotesArray);
+            } else {
+                sendMultiChoice(noteList);
+            }
         }
-
         return true;
     }
 
+    public void sendMultiChoice(ArrayList<Notes> notes) {
+        String message = notes.get(selectedNotePosition).getTitle() +
+                "\n\n" + notes.get(selectedNotePosition).getTextBody();
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, message);
+        sendIntent.setType("text/plain");
+        if (sendIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(sendIntent);
+        }
+    }
     private void sendAsMail(ArrayList<Notes> arrayList) {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:"));
@@ -245,12 +279,16 @@ public class HomePage extends AppCompatActivity
         }if(isCategoriesView){
             sortByColor();
         }
+        if (loadedProfile) {
+            loadProfile();
+        }
     }
 
     private void SettingsScreen() {
-
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         String categories = settings.getString("catView","");
+        boolean sync = settings.getBoolean("sync", true);
+        boolean wifi = settings.getBoolean("wifi", true);
         boolean recycleBin = settings.getBoolean("recycle",true);
         if("yes".equals(categories)){
            showCategoriesView = true;
@@ -267,6 +305,40 @@ public class HomePage extends AppCompatActivity
             showRecycleBinMenuOption = false;
             invalidateOptionsMenu();
         }
+        if (sync) {
+            System.out.println("Message : settings auto sync");
+            autoSync = true;
+            connection = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            connection.getActiveNetworkInfo();
+            System.out.println("Message :  auto sync");
+            if (wifi) {
+                isWifi = true;
+                System.out.println("Message : settings auto sync only on wifi");
+                if (connection != null) {
+                    NetworkInfo info = connection.getActiveNetworkInfo();
+                    if (info != null) {
+                        boolean isWifiNetwork = connection.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected();
+                        if (isWifiNetwork) {
+                            isWifiNet = true;
+                            System.out.println("Message : settings auto sync wifi not connected");
+                        } else {
+                            isWifiNet = false;
+                        }
+                    }
+                }
+            } else {
+                isWifi = false;
+                System.out.println("Message : settings auto sync on any network");
+            }
+        } else {
+            autoSync = false;
+            System.out.println("Message : No auto sync enabled");
+        }
+
+
+
+
+
         /*
         displayNotes(); is called again here cuz, i realize that after the showCategories settings change
         it only affects the items that are not inView yet (even when you call adapter.notifyDataSetChanged();
@@ -292,7 +364,6 @@ public class HomePage extends AppCompatActivity
             startActivity(new Intent(this,OnBoardingScreen.class)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK));
         }
-
         /*
         this code toggles the rateMe dialogue
 
@@ -364,6 +435,7 @@ public class HomePage extends AppCompatActivity
     }
 
     private void loadProfile() {
+        loadedProfile = true;
         NavigationView navigationView = findViewById(R.id.nav_view);
         Menu menu = navigationView.getMenu();
         if(user != null){
@@ -375,13 +447,18 @@ public class HomePage extends AppCompatActivity
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             UserContract userValues = documentSnapshot.toObject(UserContract.class);
-                            assert userValues != null;
-                            String imageUrl = userValues.getImage();
-                            if(imageUrl.equals("default")){
-                                navProfileImage.setImageDrawable(getDrawable(R.drawable.user_profile_picture));
-                            }else{
+                            if (userValues != null) {
+                                String imageUrl = userValues.getImage();
+                                if (imageUrl.equals("default")) {
+                                    navProfileImage.setImageDrawable(getDrawable(R.drawable.user_profile_picture));
+                                } else {
 //else set what they've got in the database
+                                    Glide.with(getApplicationContext())
+                                            .load(userValues.getImage()).placeholder(getDrawable(R.drawable.user_profile_picture))
+                                            .into(navProfileImage);
+                                }
                             }
+
                         }
                     }
             );
@@ -696,6 +773,13 @@ searchMenu.setVisible(false);
             }
         }
         else if (id == R.id.nav_share) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/*");
+            intent.putExtra(Intent.EXTRA_TEXT, "Check out iNote, i use it to take and manage notes or share them with the people i care about, get it for" +
+                    " free at " + "market://details?id=" + getPackageName());
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
+            }
 
         }else if(id == R.id.nav_contacts){
             if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.READ_CONTACTS)
@@ -705,27 +789,94 @@ searchMenu.setVisible(false);
                 requestPermissions();
             }
         }else if(id == R.id.nav_private_notes){
-            LayoutInflater createPassLayout = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            createPasswordView = createPassLayout.inflate(R.layout.create_password_layout,null);
-            inputPasswordView = createPassLayout.inflate(R.layout.password_layout,null);
-            if(!checkPasswordCreationValidation()){
-                createNewPassword();
-            }else{
-               privateNotePassword = inputPasswordView.findViewById(R.id.private_note_password_edit_text);
-               resetPassword = inputPasswordView.findViewById(R.id.private_note_reset_password);
-                createDialogue(inputPasswordView);
-                validatePassWord(privateNotePassword);
+            if (isProtectedNotesView) {
+                //do not inflate the passLayout a second time dude :(
+            } else {
+                LayoutInflater createPassLayout = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                createPasswordView = createPassLayout.inflate(R.layout.create_password_layout, null);
+                inputPasswordView = createPassLayout.inflate(R.layout.password_layout, null);
+                if (!checkPasswordCreationValidation()) {
+                    createNewPassword();
+                } else {
+                    privateNotePassword = inputPasswordView.findViewById(R.id.private_note_password_edit_text);
+                    resetPassword = inputPasswordView.findViewById(R.id.private_note_reset_password);
+                    createDialogue(inputPasswordView);
+                    validatePassWord(privateNotePassword);
+                }
             }
 
         }else if(id == R.id.nav_sign_in){
             startActivity(new Intent(this,LoginOrSignUp.class));
         }else if(id == R.id.nav_log_out){
-            if(user != null){
-                firebaseAuth.signOut();
-                recreate();
-                startActivity(new Intent(this,LoginOrSignUp.class)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK));
-                Toast.makeText(this, "Logged Out", Toast.LENGTH_SHORT).show();
+            /*TODO dont forget to always check for network ion before logging out*/
+            if (user != null) {
+                connection = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (connection != null) {
+                    NetworkInfo networkInfo = connection.getActiveNetworkInfo();
+                    if (networkInfo != null && networkInfo.isConnected()) {
+                        /*AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                        alert.setTitle("");
+                        alert.setMessage("Log out and clear all notes(Device)? \n" +
+                                "This prevents your notes from being accessed by someone else " +
+                                "and/or being synced or added to newly logged in accounts\nYour notes will still be backed up on the cloud");
+                        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if(user != null){
+                                    Toast.makeText(HomePage.this, "Syncing Notes...", Toast.LENGTH_SHORT).show();
+                                    Gson gson = new Gson();
+                                    String notes = gson.toJson(noteList);
+                                    String privateNotes = gson.toJson(protectedNotesArray);
+                                    Map<String,String> allNotes = new HashMap<>();
+                                    allNotes.put("notes",notes);
+                                    allNotes.put("privateNotes",privateNotes);
+                                    fireStore.collection("Notes").document(user.getUid()).set(allNotes)
+                                    .addOnCompleteListener(
+                                            new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()){
+                                                        firebaseAuth.signOut();
+                                                        recreate();
+                                                        noteList.clear();
+                                                        protectedNotesArray.clear();
+                                                        savePrivateNoteToMemory();
+                                                        saveNotesToMemory();
+                                                        startActivity(new Intent(getApplicationContext(),LoginOrSignUp.class)
+                                                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK));
+                                                        Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                    );
+                                    }
+                            }
+                        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                firebaseAuth.signOut();
+                                recreate();
+                            }
+                        }).setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Do nothing if they cancel
+                            }
+                        }).create().show();*/
+                        final ProgressDialog progressDialog = new ProgressDialog(this);
+                        progressDialog.setTitle("Processing...");
+                        progressDialog.show();
+                        firebaseAuth.signOut();
+                        progressDialog.cancel();
+                        recreate();
+                        startActivity(new Intent(getApplicationContext(), LoginOrSignUp.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                        Toast.makeText(getApplicationContext(), "Logged Out", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
             }
         }
 
@@ -806,6 +957,7 @@ if(passwordInput.length() == 4 && passwordInput.getText().toString().equals(getP
                 Toast.makeText(this, "permission denied", Toast.LENGTH_SHORT).show();
                 requestPermissions();
                 //requestPermission again to enter the reationale part, (winks!)
+
             }
         }
 
@@ -816,14 +968,40 @@ if(passwordInput.length() == 4 && passwordInput.getText().toString().equals(getP
             /*TODO
              *  this is invoked when user cancels your permission request and you need to explain why you needed the permission
              *  */
-            Toast.makeText(this, "should show requestRationale", Toast.LENGTH_SHORT).show();
+            permissionRationale();
         }else{
             //request permission
             ActivityCompat.requestPermissions(this,new String[]{
                     Manifest.permission.READ_CONTACTS},CONTACT_REQUEST_CODE);
         }
     }
-public boolean hasShownWelcomeScreen(){
+
+    private void permissionRationale() {
+        AlertDialog.Builder permissionMessage = new AlertDialog.Builder(this);
+        permissionMessage.setMessage("We noticed you've recently disabled the permission " +
+                "for iNote to access your contacts, some authorizations are needed for this function to work," +
+                " we promise to never pick or use your information without your consent.");
+        permissionMessage.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+
+                startActivity(intent);
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        permissionMessage.create().show();
+    }
+
+    public boolean hasShownWelcomeScreen() {
         OnBoardingScreen.preferences = getSharedPreferences
                 (OnBoardingScreen.WELCOME_PREFERENCE_KEY,Context.MODE_PRIVATE);
        return OnBoardingScreen.preferences.getBoolean
@@ -952,21 +1130,45 @@ public void securityOkay(View view){
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        saveNotesToCloud();
+        saveNotesToCloud();
+        //on destroy never gets called if they exit the
+        //app using the minimize button
+        //so we wanna call this method in on pause too
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveNotesToCloud();
     }
 
     public void saveNotesToCloud(){
         if(user != null){
-            Gson gson = new Gson();
-            String notes = gson.toJson(noteList);
-            String privateNotes = gson.toJson(protectedNotesArray);
-            Map<String,String> allNotes = new HashMap<>();
-            allNotes.put("notes",notes);
-            allNotes.put("privateNotes",privateNotes);
-            fireStore.collection("Notes").document(user.getUid()).set(allNotes);
+            if (autoSync) {
+                System.out.println("Message : Cloud auto sync enable");
+                if (isWifi && isWifiNet) {
+                    System.out.println("Message : Cloud auto sync enable only on wifi");
+                    saveToCloud();
+                } else if (!isWifi) {
+                    //save it cuz this means we can sync on any network, not just on wifi
+                    saveToCloud();
+                    System.out.println("Message : Cloud auto sync enabled on any network");
+                }
+            }
         }
 }
-public void syncNotesFromCloud(){
+
+    private void saveToCloud() {
+        Gson gson = new Gson();
+        String notes = gson.toJson(noteList);
+        String privateNotes = gson.toJson(protectedNotesArray);
+        Map<String, String> allNotes = new HashMap<>();
+        allNotes.put("notes", notes);
+        allNotes.put("privateNotes", privateNotes);
+        fireStore.collection("Notes").document(user.getUid()).set(allNotes);
+    }
+
+    public void syncNotesFromCloud() {
         if(user != null){
             DocumentReference cloudNotes = fireStore.collection("Notes").document(user.getUid());
             cloudNotes.get().addOnCompleteListener(
@@ -975,29 +1177,36 @@ public void syncNotesFromCloud(){
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if(task.isSuccessful() && task.getResult() != null){
                                 CloudNotes cloudNotes = task.getResult().toObject(CloudNotes.class);
-                                String one = cloudNotes.getNotes();
-                                String two = cloudNotes.getPrivateNotes();
-                                Gson gson = new Gson();
-                                Type noteType = new TypeToken<ArrayList<Notes>>(){}.getType();
-                                ArrayList<Notes> notesPlaceHolder =  gson.fromJson(one,noteType);
-                                ArrayList<Notes> privateNotesHolder =   gson.fromJson(two,noteType);
-/*Just in case someday one dutch bag someday needs to manage my codebase, i'll do you a favour by explaining
-* whats going on below, first we use a set with hashAndEquals defined in its class to get the notes from the dataBase
-* then we add the notes on the device to it, then the set checks for any duplicate note and removes them
-* making it a single note, in other words .. Cloud notes + mobile notes combined*/
+                                if (cloudNotes != null) {
+                                    String one = cloudNotes.getNotes();
+                                    String two = cloudNotes.getPrivateNotes();
+                                    Gson gson = new Gson();
+                                    Type noteType = new TypeToken<ArrayList<Notes>>() {
+                                    }.getType();
+                                    ArrayList<Notes> notesPlaceHolder = gson.fromJson(one, noteType);
+                                    ArrayList<Notes> privateNotesHolder = gson.fromJson(two, noteType);
+                                    /*Just in case someday one dutch bag someday needs to manage my codebase, i'll do you a favour by explaining
+                                     * whats going on below, first we use a set with hashAndEquals defined in its class to get the notes from the dataBase
+                                     * then we add the notes on the device to it, then the set checks for any duplicate note and removes them
+                                     * making it a single note, in other words .. Cloud notes + mobile notes combined*/
 
-                                Set<Notes> filter = new HashSet<>(notesPlaceHolder);
-                                filter.addAll(noteList);
-                                Set<Notes> privateFilter = new HashSet<>(privateNotesHolder);
-                                privateFilter.addAll(protectedNotesArray);
-                                /*we clear noteList(mobile version) in order to add the newly filtered values*/
-                                noteList.clear();noteList.addAll(filter);
-                                protectedNotesArray.clear();protectedNotesArray.addAll(privateFilter);
+                                    Set<Notes> filter = new LinkedHashSet<>(noteList);
+                                    filter.addAll(notesPlaceHolder);
+                                    Set<Notes> privateFilter = new LinkedHashSet<>(protectedNotesArray);
+                                    privateFilter.addAll(privateNotesHolder);
+                                    /*we clear noteList(mobile version) in order to add the newly filtered values*/
+                                    noteList.clear();
+                                    noteList.addAll(filter);
+                                    protectedNotesArray.clear();
+                                    protectedNotesArray.addAll(privateFilter);
 
-                               saveNotesToMemory();
-                               savePrivateNoteToMemory();
-                               adapter.notifyDataSetChanged();
-                               privateAdapter.notifyDataSetChanged();
+                                    saveNotesToMemory();
+                                    savePrivateNoteToMemory();
+                                    adapter.notifyDataSetChanged();
+                                    privateAdapter.notifyDataSetChanged();
+                                } else {
+
+                                }
 
 
                             }
@@ -1007,13 +1216,7 @@ public void syncNotesFromCloud(){
             );
 
         }
-}
-public class CloudTask extends AsyncTask<Void,Void,Void>{
 
-    @Override
-    protected Void doInBackground(Void... voids) {
-        return null;
-    }
 }
 
 }

@@ -44,8 +44,13 @@
         android:title="@string/send_as_mail"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_backup"
+        android:id="@+id/send_as_general"
         android:orderInCategory="107"
-        android:title="@string/backup_notes"
+        android:title="Share ( Multi-Choice )"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/send_to_contact"
+        android:orderInCategory="108"
+        android:title="@string/send_to_contact"
         app:showAsAction="never" />
 </menu>

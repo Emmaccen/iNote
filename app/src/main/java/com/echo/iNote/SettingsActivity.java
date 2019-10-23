@@ -1,6 +1,7 @@
 package com.echo.iNote;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -48,13 +50,13 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         private void restoreDefault() {
-//            SwitchPreference switchPreference =  getPreferenceScreen().findPreference("sync");
-//            switchPreference.setChecked(false);
-//            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-//            SharedPreferences.Editor editor = preferences.edit();
-//            editor.putBoolean("sync", false);
-//            editor.apply();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
             Toast.makeText(getContext(),getString(R.string.default_settings_toast_message), Toast.LENGTH_SHORT).show();
+            setPreferenceScreen(null);
+            addPreferencesFromResource(R.xml.root_preferences);
         }
 
         @Override

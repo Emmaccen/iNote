@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:descendantFocusability="blocksDescendants"
     android:id="@+id/recy_frame_layout"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -36,7 +34,6 @@
         android:fontFamily="serif"
 
         android:layout_toRightOf="@id/circleImageView"
-        android:hint="yeah this is the fake text"
         android:lines="1"
         android:textStyle="bold"/>
 
@@ -50,7 +47,6 @@
         android:layout_below="@id/recy_title_text"
         android:layout_toRightOf="@id/circleImageView"
         android:fontFamily="serif"
-        android:hint="yeah this is the fake text"
         android:lines="1"/>
     <TextView
         android:id="@+id/recy_category_text"
@@ -60,8 +56,7 @@
         android:layout_toRightOf="@id/circleImageView"
         android:layout_below="@id/recy_note_body"
         android:layout_marginBottom="4dp"
-        android:layout_marginRight="8dp"
-        android:text="personal" />
+        android:layout_marginRight="8dp" />
 
             <TextView
                 android:id="@+id/recy_date"
@@ -72,8 +67,7 @@
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="8dp"
                 android:layout_alignParentEnd="true"
-                android:fontFamily="serif"
-                android:hint="25:78:1019" />
+                android:fontFamily="serif" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 

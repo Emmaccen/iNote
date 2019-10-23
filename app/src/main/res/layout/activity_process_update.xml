@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProcessUpdate">
+
+    <Button
+        android:id="@+id/login_page_skip_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        android:drawableStart="@drawable/ic_welcome_prev_icon_24dp"
+        android:onClick="moveToHome"
+        android:paddingStart="8dp"
+        android:text="@string/Home"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card1"
+
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:elevation="4dp">
+
+            <EditText
+                android:id="@+id/final_email_update"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/login_signup_background"
+                android:drawableEnd="@drawable/profile_email_icon_24dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:hint="New Email Address"
+                android:inputType="textEmailAddress"
+                android:padding="8dp"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:elevation="4dp">
+
+            <EditText
+                android:id="@+id/final_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/login_signup_background"
+                android:drawableEnd="@drawable/profile_phone_number_icon_24dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:hint="New Phone Number"
+                android:inputType="phone"
+                android:padding="8dp"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card3"
+
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:elevation="4dp">
+
+            <EditText
+                android:id="@+id/final_new_password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/login_signup_background"
+                android:drawableEnd="@drawable/profile_password_icon_24dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:hint="New Password"
+                android:inputType="textVisiblePassword"
+                android:maxLength="9"
+                android:padding="8dp"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card4"
+
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="8dp"
+            android:elevation="4dp">
+
+            <EditText
+                android:id="@+id/final_old_password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/login_signup_background"
+                android:drawableEnd="@drawable/private_note_reset_password_icon_24dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:hint="Old Password"
+                android:inputType="textVisiblePassword"
+                android:maxLength="9"
+                android:padding="8dp"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/profile_delete_account_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="108dp"
+        android:background="@drawable/login_signup_background"
+        android:onClick="validateAction"
+        android:padding="4dp"
+        android:text="Update Account"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

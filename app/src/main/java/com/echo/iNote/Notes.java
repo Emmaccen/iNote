@@ -3,14 +3,11 @@ package com.echo.iNote;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Notes implements Parcelable {
     String title;
     String textBody;
-    static Notes noteClass;
-    static List<Notes> notesArray;
     String date;
 
     @Override
@@ -71,23 +68,6 @@ public class Notes implements Parcelable {
     public void setTextBody(String textBody) {
         this.textBody = textBody;
     }
-
-  /*  public static Notes getNoteClass() {
-        return noteClass;
-    }
-
-    public static void setNoteClass(Notes noteClass) {
-        Notes.noteClass = noteClass;
-    }
-
-    public static List<Notes> getNotesArray() {
-        return notesArray;
-    }
-
-    public static void setNotesArray(List<Notes> notesArray) {
-        Notes.notesArray = notesArray;
-    }*/
-
     @Override
     public int describeContents() {
         return 0;
@@ -111,14 +91,4 @@ public String getDate(){
         dest.writeString(date);
         dest.writeInt(colors);
     }
-
-
-   /* public void addNotesToArray(String title, String textBody,String date,int colors){
-        this.title = title;
-        this.textBody = textBody;
-        this.date = date;
-        this.colors = colors;
-
-        notesArray.add(new Notes(title,textBody,date,colors));
-    }*/
 }

@@ -18,35 +18,32 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.viewHolder>{
-    private ArrayList<ContactListContract> contactList;
-    private ContactListContract contacts;
-    private ArrayList<UserContract> firebaseUsersList;
+public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.viewHolder> {
+    Context context;
+    private ArrayList<UserContract> userMessageList;
     private UserContract users;
-Context context;
     private Intent intent;
 
-    ContactsAdapter(ArrayList<ContactListContract> contactList, ArrayList<UserContract> firebaseUsersList, Context context) {
-    this.contactList = contactList;
-        this.firebaseUsersList = firebaseUsersList;
-    this.context = context;
-}
+    MessageAdapter(ArrayList<UserContract> userMessageList, Context context) {
+        this.userMessageList = userMessageList;
+        this.context = context;
+    }
+
     @NonNull
     @Override
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.contact_list_layout,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.contact_list_layout, parent, false);
         return new viewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final viewHolder holder, int position) {
-        contacts = contactList.get(holder.getAdapterPosition());
-        users = firebaseUsersList.get(holder.getAdapterPosition());
-        holder.contactName.setText(contacts.getContactName());
+        users = userMessageList.get(holder.getAdapterPosition());
+        holder.contactName.setText(users.getPhoneNumber());
         if (users.getImage().equals("default")) {
             //set the default profile image
             holder.profileImage.setImageDrawable(context.getDrawable(R.drawable.user_profile_picture));
-        }else{
+        } else {
             Glide.with(context)
                     .load(users.getImage())
                     .into(holder.profileImage);
@@ -60,14 +57,14 @@ Context context;
                             String type = intent.getStringExtra("messageType");
                             Notes note = intent.getParcelableExtra("message");
                             context.startActivity(new Intent(view.getContext(), MessageActivity.class)
-                                    .putExtra("contactName", contactList.get(holder.getAdapterPosition()).getContactName())
-                                    .putExtra("receiver", firebaseUsersList.get(holder.getAdapterPosition()).getUserId())
+                                    .putExtra("contactName", userMessageList.get(holder.getAdapterPosition()).getPhoneNumber())
+                                    .putExtra("receiver", userMessageList.get(holder.getAdapterPosition()).getUserId())
                                     .putExtra("message", note).putExtra("type", type));
 
                         } else {
                             context.startActivity(new Intent(view.getContext(), MessageActivity.class)
-                                    .putExtra("contactName", contactList.get(holder.getAdapterPosition()).getContactName())
-                                    .putExtra("receiver", firebaseUsersList.get(holder.getAdapterPosition()).getUserId()));
+                                    .putExtra("contactName", userMessageList.get(holder.getAdapterPosition()).getPhoneNumber())
+                                    .putExtra("receiver", userMessageList.get(holder.getAdapterPosition()).getUserId()));
                         }
                     }
                 }
@@ -76,13 +73,13 @@ Context context;
 
     @Override
     public int getItemCount() {
-        return contactList.size();
+        return userMessageList.size();
     }
 
-    public class viewHolder extends RecyclerView.ViewHolder{
-TextView contactName;
-CircleImageView profileImage;
-LinearLayoutCompat container;
+    public class viewHolder extends RecyclerView.ViewHolder {
+        TextView contactName;
+        CircleImageView profileImage;
+        LinearLayoutCompat container;
 
 
         public viewHolder(@NonNull View itemView) {
