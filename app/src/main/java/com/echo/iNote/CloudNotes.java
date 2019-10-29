@@ -16,7 +16,4 @@ public class CloudNotes {
         return privateNotes;
     }
 
-    public void setPrivateNotes(String privateNotes) {
-        this.privateNotes = privateNotes;
-    }
 }

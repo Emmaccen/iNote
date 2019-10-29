@@ -305,11 +305,11 @@ public class EdithNote extends AppCompatActivity {
                 if(HomePage.isProtectedNotesView){
                     HomePage.protectedNotesArray.set(pos,new Notes(getString(R.string.toast_message_note),textBody.getText().toString(),date,note.getColors()));
                     HomePage.protectedNotesArray.add(0, HomePage.protectedNotesArray.get(pos));
-                    HomePage.protectedNotesArray.remove(pos);
+                    HomePage.protectedNotesArray.remove(pos + 1);
                 }else{
                     HomePage.noteList.set(pos,new Notes(getString(R.string.toast_message_note),textBody.getText().toString(),date,note.getColors()));
                     HomePage.noteList.add(0, HomePage.noteList.get(pos));
-                    HomePage.noteList.remove(pos);
+                    HomePage.noteList.remove(pos + 1);
                 }
                 Toast.makeText(this,getString(R.string.toast_message_saved),Toast.LENGTH_SHORT).show();
             }else if(textBody.getText().toString().isEmpty()){
@@ -318,11 +318,11 @@ public class EdithNote extends AppCompatActivity {
                 if(HomePage.isProtectedNotesView){
                     HomePage.protectedNotesArray.set(pos,new Notes(textTitle.getText().toString(),textBody.getText().toString(),date,note.getColors()));
                     HomePage.protectedNotesArray.add(0, HomePage.protectedNotesArray.get(pos));
-                    HomePage.protectedNotesArray.remove(pos);
+                    HomePage.protectedNotesArray.remove(pos + 1);
                 }else{
                     HomePage.noteList.set(pos,new Notes(textTitle.getText().toString(),textBody.getText().toString(),date,note.getColors()));
                     HomePage.noteList.add(0, HomePage.noteList.get(pos));
-                    HomePage.noteList.remove(pos);
+                    HomePage.noteList.remove(pos + 1);
                 }
                 Toast.makeText(this,getString(R.string.toast_message_saved),Toast.LENGTH_SHORT).show();
             }

@@ -22,11 +22,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.viewHold
     Context context;
     private ArrayList<UserContract> userMessageList;
     private UserContract users;
+    private ContactListContract contacts;
     private Intent intent;
+    ArrayList<ContactListContract> contactList;
 
-    MessageAdapter(ArrayList<UserContract> userMessageList, Context context) {
+    MessageAdapter(ArrayList<UserContract> userMessageList, Context context, ArrayList<ContactListContract> finalContacts) {
         this.userMessageList = userMessageList;
         this.context = context;
+        contactList = finalContacts;
     }
 
     @NonNull
@@ -39,7 +42,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.viewHold
     @Override
     public void onBindViewHolder(@NonNull final viewHolder holder, int position) {
         users = userMessageList.get(holder.getAdapterPosition());
-        holder.contactName.setText(users.getPhoneNumber());
+        contacts = contactList.get(holder.getAdapterPosition());
+        holder.contactName.setText(contacts.getContactName());
         if (users.getImage().equals("default")) {
             //set the default profile image
             holder.profileImage.setImageDrawable(context.getDrawable(R.drawable.user_profile_picture));
@@ -57,13 +61,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.viewHold
                             String type = intent.getStringExtra("messageType");
                             Notes note = intent.getParcelableExtra("message");
                             context.startActivity(new Intent(view.getContext(), MessageActivity.class)
-                                    .putExtra("contactName", userMessageList.get(holder.getAdapterPosition()).getPhoneNumber())
+                                    .putExtra("contactName", contactList.get(holder.getAdapterPosition()).getContactName())
                                     .putExtra("receiver", userMessageList.get(holder.getAdapterPosition()).getUserId())
                                     .putExtra("message", note).putExtra("type", type));
 
                         } else {
                             context.startActivity(new Intent(view.getContext(), MessageActivity.class)
-                                    .putExtra("contactName", userMessageList.get(holder.getAdapterPosition()).getPhoneNumber())
+                                    .putExtra("contactName", contactList.get(holder.getAdapterPosition()).getContactName())
                                     .putExtra("receiver", userMessageList.get(holder.getAdapterPosition()).getUserId()));
                         }
                     }

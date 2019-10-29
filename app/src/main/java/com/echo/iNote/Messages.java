@@ -33,6 +33,7 @@ import java.util.Set;
  */
 public class Messages extends Fragment {
     ArrayList<UserContract> userMessageList;
+    private ArrayList<ContactListContract> finalContact;
     MessageAdapter messageAdapter;
     RecyclerView recyclerView;
     private FirebaseFirestore firestore;
@@ -40,9 +41,10 @@ public class Messages extends Fragment {
     private FirebaseAuth firebaseAuth;
     private Set<String> chatIds;
     private View view;
+    ArrayList<ContactListContract> contact;
 
-    public Messages() {
-        // Required empty public constructor
+    public Messages(Set<ContactListContract> contacts) {
+contact = new ArrayList<>(contacts);
     }
 
 
@@ -73,11 +75,14 @@ public class Messages extends Fragment {
                                     }
                                     usersCollection.get().addOnCompleteListener(
                                             new OnCompleteListener<QuerySnapshot>() {
+
                                                 @Override
                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                     if (task.isSuccessful()) {
                                                         if (task.getResult() != null) {
+                                                            finalContact = new ArrayList<>();
                                                             userMessageList = new ArrayList<>();
+                                                            finalContact.clear();
                                                             userMessageList.clear();
                                                             UserContract users;
                                                             for (QueryDocumentSnapshot docs : task.getResult()) {
@@ -85,13 +90,18 @@ public class Messages extends Fragment {
                                                                 for (String id : chatIds) {
                                                                     if (users.getUserId().equals(id)) {
                                                                         userMessageList.add(users);
+                                                                        for(ContactListContract finalCont : contact){
+                                                                            if(finalCont.getContactPhoneNumber().contains(users.getPhoneNumber())){
+                                                                                finalContact.add(finalCont);
+                                                                            }
+                                                                        }
 
                                                                     }
                                                                 }
                                                             }
                                                             recyclerView = view.findViewById(R.id.message_fragment_recycler_view);
                                                             recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-                                                            messageAdapter = new MessageAdapter(userMessageList, getContext());
+                                                            messageAdapter = new MessageAdapter(userMessageList, getContext(),finalContact);
                                                             recyclerView.setAdapter(messageAdapter);
                                                             // adapter here
                                                         }

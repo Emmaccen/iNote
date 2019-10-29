@@ -39,9 +39,9 @@ Button next,prev;
         prev = findViewById(R.id.welcome_prev_button);
         prev.setVisibility(View.INVISIBLE);
         initializeDots(0);
-        list.add(new WelcomeScreenContract("Cloud Storage", "Use your iNote integrated with real time cloud storage and ensure ease of access across all your devices", R.drawable.welcome_cloud_sync));
-        list.add(new WelcomeScreenContract("In-App Note Sharing", "Took a note and want your friends and family to have them ? we've got you covered.", R.drawable.welcome_in_app_messaging));
-        list.add(new WelcomeScreenContract("Log In", "Create an account and you're just a step away from never losing a single note", R.drawable.welcome_log_in));
+        list.add(new WelcomeScreenContract("Cloud Storage", getString(R.string.cloud_discription), R.drawable.welcome_cloud_sync));
+        list.add(new WelcomeScreenContract("In-App Note Sharing", getString(R.string.in_app_note_discription), R.drawable.welcome_in_app_messaging));
+        list.add(new WelcomeScreenContract("Log In", getString(R.string.Log_in_discription), R.drawable.welcome_log_in));
                 adapter = new WelcomeScreenViewPager(list,this);
                 viewPager.setAdapter(adapter);
                 viewPager.addOnPageChangeListener(

@@ -1,15 +1,12 @@
 package com.echo.iNote;
 
 
-import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,7 +45,6 @@ public class ContactList extends Fragment {
     private Cursor cursor;
 RecyclerView contactsRecyclerView;
 ContactsAdapter contactsAdapter;
-private ProgressDialog loadProgress;
 FirebaseFirestore fireStore;
 FirebaseUser user;
 FirebaseAuth firebaseAuth;
@@ -56,26 +53,26 @@ ArrayList<UserContract> resultList;
     private Intent intent;
     private String phoneNumber;
 
-    public ContactList() {
+    public ContactList(Set<ContactListContract> contactList) {
         // Required empty public constructor
+        this.rawContacts = contactList;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
          view = inflater.inflate(R.layout.fragment_contact_list, container, false);
-        loadProgress = new ProgressDialog(view.getContext());
+
         fireStore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
         resultList = new ArrayList<>();
-        rawContacts = new LinkedHashSet<>();
         LoadContactsInBackground load = new LoadContactsInBackground();
         load.execute();
         return view;
     }
 
-    private void getAllContacts() {
+    /*private void getAllContacts() {
         if (user == null) {
             Toast.makeText(view.getContext(), getString(R.string.no_user_account_detected), Toast.LENGTH_SHORT).show();
         } else {
@@ -120,7 +117,7 @@ ArrayList<UserContract> resultList;
             }
         }
 
-    }
+    }*/
 
     public void saveContactsToMemory() {
         SharedPreferences contacts = view.getContext().getSharedPreferences(CONTACT_PREF_KEY, Context.MODE_PRIVATE);
@@ -152,21 +149,13 @@ ArrayList<UserContract> resultList;
 
     public class LoadContactsInBackground extends AsyncTask<Void, Void, Void> {
         @Override
-        protected void onPreExecute() {
-            loadProgress.setTitle("Loading From Database");
-            loadProgress.show();
-        }
-
-        @Override
         protected Void doInBackground(Void... voids) {
             CollectionReference collection = FirebaseFirestore.getInstance().collection("Users");
             collection.get().addOnCompleteListener(
                     new OnCompleteListener<QuerySnapshot>() {
                         ArrayList<ContactListContract> finalContacts = new ArrayList<>();
-
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            getAllContacts();
                             for (QueryDocumentSnapshot documents : task.getResult()) {
                                 UserContract users = documents.toObject(UserContract.class);
                                 if (user != null && !user.getUid().equals(users.getUserId())) {
@@ -183,7 +172,15 @@ ArrayList<UserContract> resultList;
                             contactsRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
                             contactsAdapter = new ContactsAdapter(finalContacts, resultList, view.getContext());
                             contactsRecyclerView.setAdapter(contactsAdapter);
-                            loadProgress.cancel();
+                            ChatActivity.loadProgress.cancel();
+                        }
+                    }
+            ).addOnFailureListener(
+                    new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            ChatActivity.loadProgress.cancel();
                         }
                     }
             );

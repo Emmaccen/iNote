@@ -60,6 +60,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import hotchemi.android.rate.AppRate;
 
 public class HomePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -364,21 +365,6 @@ public class HomePage extends AppCompatActivity
             startActivity(new Intent(this,OnBoardingScreen.class)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK));
         }
-        /*
-        this code toggles the rateMe dialogue
-
-        AppRate.with(this)
-                .setInstallDays(1); //default val 10;
-                .setLaunchTimes(3); // default1 val 10
-                .setRemindInterval(2); // when to show again after pushing remind me later
-                .monitor();
-                appRate.showRateDialogIfMeetsConditions(this);
-                //if you want to show again even if user declines use
-                //AppRate.with(this).showRateDialog(this);
-                // you can override the stings.xml to change default text values
-                
-
-         */
         androidx.preference.PreferenceManager.setDefaultValues(this,R.xml.root_preferences,false);
         setContentView(R.layout.activity_home_page);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -393,6 +379,20 @@ public class HomePage extends AppCompatActivity
         loadNotesFromRecycleBin();
         loadPrivateNotesFromMemory();
         syncNotesFromCloud();
+        // this code toggles the rateMe dialogue
+        AppRate.with(this)
+                .setInstallDays(1) //default val 10;
+                .setLaunchTimes(3) // default1 val 10
+                .setRemindInterval(2) // when to show again after pushing remind me later
+                .monitor();
+        AppRate.showRateDialogIfMeetsConditions(this);
+        //if you want to show again even if user declines use
+//                AppRate.with(this).clearAgreeShowDialog();
+        //if you wanan show it imidiately without any condition you can use the code below
+        //AppRate.with(this).showRateDialog(this);
+        // you can override the stings.xml to change default text values
+
+
 
 
 
@@ -775,8 +775,7 @@ searchMenu.setVisible(false);
         else if (id == R.id.nav_share) {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/*");
-            intent.putExtra(Intent.EXTRA_TEXT, "Check out iNote, i use it to take and manage notes or share them with the people i care about, get it for" +
-                    " free at " + "market://details?id=" + getPackageName());
+            intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.check_out_iNote) + "market://details?id=" + getPackageName());
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             }
@@ -878,6 +877,8 @@ searchMenu.setVisible(false);
                 }
 
             }
+        }else if(id == R.id.nav_about){
+            startActivity(new Intent (this,AboutUs.class));
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
