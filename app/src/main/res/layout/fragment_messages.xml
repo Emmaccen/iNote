@@ -5,11 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".Messages">
 
-    <!-- TODO: Update blank fragment layout -->
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/message_fragment_recycler_view"
-    tools:listitem="@layout/contact_list_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-</androidx.recyclerview.widget.RecyclerView>
+   <androidx.recyclerview.widget.RecyclerView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:id="@+id/messages_fragment_recycler_view"/>
+
 </FrameLayout>

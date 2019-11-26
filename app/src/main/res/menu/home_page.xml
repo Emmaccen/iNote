@@ -33,5 +33,11 @@
         android:orderInCategory="104"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/app_bar_new_message"
+        android:icon="@drawable/incoming_message_24dp"
+        android:orderInCategory="88"
+        android:title="Unread Message"
+        app:showAsAction="ifRoom" />
 
 </menu>

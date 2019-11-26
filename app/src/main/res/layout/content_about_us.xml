@@ -35,7 +35,7 @@
            android:layout_margin="4dp"
            android:padding="4dp"
            android:text="This application is developed to offer flexibility at taking notes,
-it is built to be user friendly, easy to use and perfectly comprehensible while still maintaining its efficiency
+it is built to be user friendly, easy to maintain and perfectly comprehensible while still maintaining its efficiency
 in your ever day use."
            />
 
@@ -87,7 +87,7 @@ and perhaps, a little insight on how to properly manage your Notes"
            android:padding="4dp"
            android:text="As you might already know, this unlocks the best parts of the app, allowing you to secure your data as you wish.
  If you're not already signed up, you can do that by navigating to the side menu.\nNote : prior to signing out your account, make sure auto sync is enabled, and while you're signed out, remember to clear all
-private notes, this ensures any newly signed in user on the same device doesn't get access to your notes"
+private notes, this ensures any newly signed in user on the same device doesn't gain access to your notes."
            />
 
        <androidx.cardview.widget.CardView
@@ -103,7 +103,7 @@ private notes, this ensures any newly signed in user on the same device doesn't 
            android:layout_height="wrap_content"
            android:layout_margin="4dp"
            android:padding="4dp"
-           android:text="iNote is integrated with real time cloud storage that kicks-off on account creation,
+           android:text="iNote is integrated with real time cloud storage that kicks-in on account creation,
  this can be useful if you'd love to secure your data and have access to your notes across multiple devices, even if you
 lose your mobile, all you have to do is login with your account details on your new device and you'll have all your notes restored.
 It is recommended that auto sync be left enabled to keep your notes updated (auto sync is enabled by default)" />
@@ -121,8 +121,7 @@ It is recommended that auto sync be left enabled to keep your notes updated (aut
            android:layout_height="wrap_content"
            android:layout_margin="4dp"
            android:padding="4dp"
-           android:text="Take notes in conferences, rehearsals,classes, anywhere, and want someone to have them?
-            No worries, iNote allows you to share notes directly with your friends and family with iNote installed on their devices.
+           android:text="Take notes in conferences, rehearsals, classes, anywhere, and want someone to have them? No worries, iNote allows you to share notes directly with your friends and family with iNote installed on their devices.
  It's just a click away."
            />
        <androidx.cardview.widget.CardView
@@ -136,13 +135,13 @@ It is recommended that auto sync be left enabled to keep your notes updated (aut
            android:layout_height="wrap_content"
            android:layout_margin="4dp"
            android:padding="4dp"
-           android:text="1. Recycle Bin \nRecycle bin is disabled by default and it can be configured in the settings page. It is important to note that, private notes are not recycled \n\n
-2. Private Notes \nPrivate notes can be enabled in the navigation bar. It requires a security question if you forget your passkey, but if you forget your security answer,
+           android:text="1. Recycle Bin \n\nRecycle bin is disabled by default and it can be configured in the settings page. It is important to note that, private notes are not recycled \n\n
+2. Private Notes \n\nPrivate notes can be enabled in the navigation bar. It requires a security question if you forget your passkey, but if you forget your security answer,
  make sure you're logged in, allow auto sync, uninstall and reinstall the app, provide your login details and generate a new private key, then all your previously saved private notes will be restored. Private notes should always be
 cleared on logout\n\n
-3. Note categories\n
+3. Note categories\n\n
 Note category colors are disabled by default, it allows you to locate your notes with ease, as it shows the categories with a color tag.
- To enable Colored-Categories, head to the menu and turn on 'Show Note Categories Colors'"
+ To enable Colored-Categories, head to the menu section, click on settings and turn on 'Show Note Categories Colors'"
            />
 
        <androidx.cardview.widget.CardView
@@ -160,10 +159,9 @@ Note category colors are disabled by default, it allows you to locate your notes
            android:layout_height="wrap_content"
            android:layout_margin="4dp"
            android:padding="4dp"
-           android:text="For feedback, suggestions and reports, you can contact us via the links provided
+           android:text="For feedbacks, suggestions and reports, you can contact us via the links provided
  below. Thank you for using our service."
            />
-
 
        <TextView
            android:onClick="mailUs"
@@ -186,7 +184,7 @@ Note category colors are disabled by default, it allows you to locate your notes
            android:drawableStart="@drawable/profile_email_icon_24dp"
            android:textColor="#000000"
            android:textStyle="bold"
-           android:text="sliqque_"
+           android:text="caveOfProgramming"
            android:layout_marginBottom="16dp"/>
 
 <com.google.android.material.internal.BaselineLayout

@@ -20,6 +20,15 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_gravity="center"
+            android:text="oriola emmanuel"
             android:layout_margin="4dp"/>
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_margin="16dp"
+            android:backgroundTint="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+                android:background="@drawable/incoming_message_24dp"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

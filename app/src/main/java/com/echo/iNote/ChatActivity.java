@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.telephony.PhoneNumberUtils;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -58,17 +59,24 @@ public class background extends AsyncTask<Void,Void,Void>{
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(ChatActivity.this, getSupportFragmentManager(),rawContacts);
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
+        if (user == null) {
+             Toast.makeText(getApplicationContext(), getString(R.string.no_user_account_detected), Toast.LENGTH_SHORT).show();
+loadProgress.cancel();
+        } else {
+            SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(ChatActivity.this, getSupportFragmentManager(), rawContacts);
+            ViewPager viewPager = findViewById(R.id.view_pager);
+            viewPager.setOffscreenPageLimit(2);
+            viewPager.setAdapter(sectionsPagerAdapter);
+            TabLayout tabs = findViewById(R.id.tabs);
+            tabs.setupWithViewPager(viewPager);
+        }
     }
 }
 
     private void getAllContacts() {
         if (user == null) {
-            Toast.makeText(this, getString(R.string.no_user_account_detected), Toast.LENGTH_SHORT).show();
+            //can't show toast message here buddy :)
+           /* Toast.makeText(this, getString(R.string.no_user_account_detected), Toast.LENGTH_SHORT).show();*/
         } else {
             ContentResolver contentResolver = this.getContentResolver();
             // cursor will be initialized in background
@@ -97,7 +105,8 @@ public class background extends AsyncTask<Void,Void,Void>{
                             String phoneNum = phoneNumberCursor.getString(phoneNumberCursor.getColumnIndex(
                                     ContactsContract.CommonDataKinds.Phone.NUMBER
                             ));
-                            phoneNumber = phoneNum.replace(" ", "");
+//                            phoneNumber = phoneNum.replace(" ", "");
+                          phoneNumber =  PhoneNumberUtils.stripSeparators(phoneNum);
                         }
                         phoneNumberCursor.close();
                     }

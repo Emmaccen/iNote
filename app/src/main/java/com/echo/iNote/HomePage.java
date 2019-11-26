@@ -15,6 +15,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.telephony.PhoneNumberUtils;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,11 +49,17 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -114,7 +123,7 @@ public class HomePage extends AppCompatActivity
     static boolean autoSync;
     static boolean isWifi;
     static boolean isWifiNet;
-    static boolean isMobileNet;
+    static boolean shouldUpdateNotesAsRead;
     private MenuItem restoreAllMenu;
     private View createPasswordView;
     private View inputPasswordView;
@@ -126,6 +135,9 @@ public class HomePage extends AppCompatActivity
     private View navigationViewHeaderView;
     private ConnectivityManager connection;
     private boolean loadedProfile;
+    private ArrayList<Notes> incomingMessages;
+    private MenuItem newMessage;
+    private boolean shouldShowMessageIcon;
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -264,7 +276,12 @@ public class HomePage extends AppCompatActivity
 
     @Override
     protected void onResume() {
+        /*shouldUpdateNotesAsRead = false; makes sure the auto Update message as read doesn't happen until we actually open it
+        * this is needed since we're using a snapshotListener that fires anytime there's a change in the database
+        * even when we haven't opened the activity, too bad*/
+        shouldUpdateNotesAsRead = false;
         super.onResume();
+        shouldShowMessageIcon = false;
         SettingsScreen();
         adapter.notifyDataSetChanged();
         titleAdapter.notifyDataSetChanged();
@@ -393,16 +410,56 @@ public class HomePage extends AppCompatActivity
         // you can override the stings.xml to change default text values
 
 
-
-
-
-       /* TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         String countryIso = telephonyManager.getSimCountryIso().toUpperCase();
+
         int number = PhoneNumberUtil.getInstance().getCountryCodeForRegion(countryIso);
-        String us = PhoneNumberUtil.getInstance().getRegionCodeForCountryCode(20);
+        String NG = PhoneNumberUtil.getInstance().getRegionCodeForCountryCode(234);
         String num = PhoneNumberUtil.getInstance().getExampleNumber("US").toString();
         String region = PhoneNumberUtil.getInstance().getNddPrefixForRegion("IQ", true);
-*/
+
+
+   /* System.out.println("Message country ISO : " + countryIso);
+        System.out.println("Message number : " + number);
+//       String formated = PhoneNumberUtils.formatNumberToRFC3966("07030680817",countryIso); //tel:+234-703-068-0817
+//       String formated = PhoneNumberUtils.formatNumberToE164("07030680817",countryIso); // +23407030680817
+//        String formated = PhoneNumberUtils.formatNumber("07030680817","+234",countryIso);//07030680817*/
+        String one = PhoneNumberUtils.formatNumber("+23407030680817","NG");
+        String two = PhoneNumberUtils.formatNumber("+2347030680817","NG");
+        String three = PhoneNumberUtils.formatNumber("+234 703 068 0817","NG");
+        String four = PhoneNumberUtils.formatNumber("+234-703-068-0817","NG");
+        String five = PhoneNumberUtils.formatNumber("23407030680817","NG");
+
+
+        System.out.println("Compare phone " + PhoneNumberUtils.compare("+2347030680817","+234-703-068-0817"));
+        System.out.println("Compare phone " + PhoneNumberUtils.compare("07030680817","+234-703-068-0817"));
+        System.out.println("Compare phone " + PhoneNumberUtils.compare("+234 703 068 0817","07030680817"));
+        System.out.println("Compare phone " + PhoneNumberUtils.compare("+2347030680817","+2347030680817"));
+        System.out.println(PhoneNumberUtils.formatNumberToE164(one,"234"));
+        System.out.println(PhoneNumberUtils.formatNumberToE164(two,"234"));
+        System.out.println(PhoneNumberUtils.formatNumberToE164(three,countryIso));
+        System.out.println(PhoneNumberUtils.formatNumberToE164(four,countryIso));
+        System.out.println(PhoneNumberUtils.formatNumberToE164(five,countryIso));
+        System.out.println(PhoneNumberUtils.formatNumberToE164("16823757862","US"));
+
+        System.out.println(number);
+
+        System.out.println("message formatted number is : " + PhoneNumberUtils.stripSeparators(one));
+        System.out.println("message formatted number is : " + PhoneNumberUtils.stripSeparators(two));
+        System.out.println("message formatted number is : " + PhoneNumberUtils.stripSeparators(five));
+        System.out.println("message formatted number is : " + PhoneNumberUtils.stripSeparators("+1 682-375-7862"));
+        System.out.println("message formatted number is : " + PhoneNumberUtils.stripSeparators("1(682)3757862"));
+        System.out.println("message formatted number is : " + PhoneNumberUtils.stripSeparators("1(6823757862"));
+
+        System.out.println("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+
+       /* System.out.println("message formatted number is : " + PhoneNumberUtils.stripSeparators(one));
+        System.out.println("message formatted number is : " + PhoneNumberUtils.stripSeparators(two));
+        System.out.println("message formatted number is : " + PhoneNumberUtils.stripSeparators(three));
+        System.out.println("message formatted number is : " + PhoneNumberUtils.stripSeparators(four));
+        System.out.println("message formatted number is : " + PhoneNumberUtils.stripSeparators(five));*/
+//        System.out.println("message " + PhoneNumberUtil.getInstance().getNddPrefixForRegion("NG",false));
+
 
         recyclerView = findViewById(R.id.homepage_recycler_view);
         layoutManager = new LinearLayoutManager(this);
@@ -431,7 +488,36 @@ public class HomePage extends AppCompatActivity
         navProfileImage =  navigationViewHeaderView.findViewById(R.id.nav_profile_image);
         navHeaderEmail = navigationViewHeaderView.findViewById(R.id.nav_header_email);
         loadProfile();
+        fetchIncomingNotes();
+    }
 
+    public void fetchIncomingNotes(){
+        if(user != null){
+            connection = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+            NetworkInfo info = connection.getActiveNetworkInfo();
+            if(info != null && info.isConnected()){
+                        CollectionReference notes = fireStore.collection("Chats");
+                notes.addSnapshotListener(
+                        new EventListener<QuerySnapshot>() {
+                            @Override
+                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                ChatModel chatModel;
+                                for(QueryDocumentSnapshot docs : queryDocumentSnapshots ){
+                                    chatModel = docs.toObject(ChatModel.class);
+                                    if(chatModel.getReceiver().equals(user.getUid()) && chatModel.getIsSeen().equals("false")){
+                                        System.out.println("Loop : in the loop");
+                                        shouldShowMessageIcon = true;
+                                        invalidateOptionsMenu();
+                                        break;}else{
+                                        shouldShowMessageIcon = false;
+                                        invalidateOptionsMenu();
+                                    }
+                                }
+                            }
+                        }
+                );
+            }
+        }
     }
 
     private void loadProfile() {
@@ -546,6 +632,12 @@ public class HomePage extends AppCompatActivity
         MenuItem searchMenu = menu.findItem(R.id.app_bar_search);
         MenuItem recycleBinMenu = menu.findItem(R.id.recycle_bin);
         restoreAllMenu = menu.findItem(R.id.recycleBin_restore_all);
+        newMessage = menu.findItem(R.id.app_bar_new_message);
+        if(shouldShowMessageIcon){
+            newMessage.setVisible(true);
+        }else{
+            newMessage.setVisible(false);
+        }
         //we only wanna show the recycleBin menu if we show the view
         if(isRecycleBinView){
 searchMenu.setVisible(false);
@@ -718,6 +810,13 @@ searchMenu.setVisible(false);
                //arrays will be notified in onResume
                Toast.makeText(HomePage.this,"All Notes Restored", Toast.LENGTH_SHORT).show();
            }
+        }else if(id == R.id.app_bar_new_message){
+            if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.READ_CONTACTS)
+                    ==  PackageManager.PERMISSION_GRANTED){
+                startActivity(new Intent(this, ChatActivity.class));
+            }else{
+                requestPermissions();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -756,7 +855,6 @@ searchMenu.setVisible(false);
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_notes) {
             displayNotes();
         } else if (id == R.id.nav_title_view) {

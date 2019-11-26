@@ -56,6 +56,7 @@ Button next,prev;
                                initializeDots(position);
                                if(position == 0){
                                    prev.setVisibility(View.INVISIBLE);
+
                                }else{
                                    prev.setVisibility(View.VISIBLE);
                                }

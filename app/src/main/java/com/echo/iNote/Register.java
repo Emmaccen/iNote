@@ -8,9 +8,12 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
+import android.telephony.TelephonyManager;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +27,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +38,8 @@ public class Register extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
-    TextView registrationEmail, registrationPhoneNumber, registrationPassword;
+    EditText registrationEmail, registrationPhoneNumber, registrationPassword
+            , countryCode;
     Toast toast;
     FirebaseAuth firebaseAuth;
 
@@ -60,7 +65,7 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         /*Don't forget to implement the networking part in the Async background task later
-         * if you do? am gonna kill me */
+         * if you don't? am gonna kill me */
 
 
         //Sigh :( time to start coding the networking part mehn!
@@ -70,9 +75,16 @@ public class Register extends AppCompatActivity {
         registerReceiver(networkReceiver, intentFilter);
 //hate the four line code above, should i just wrap it in a method... its confusing me !
 
+        TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        String countryIso = telephonyManager.getSimCountryIso().toUpperCase();//NG
+        int countryCodeNumber = PhoneNumberUtil.getInstance().getCountryCodeForRegion(countryIso);//234
+
         registrationEmail = findViewById(R.id.registration_email);
         registrationPhoneNumber = findViewById(R.id.registration_number);
         registrationPassword = findViewById(R.id.registration_password);
+        countryCode = findViewById(R.id.country_code_edit_text);
+        countryCode.setText("+" + countryCodeNumber);
+
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
@@ -81,6 +93,10 @@ public class Register extends AppCompatActivity {
         startActivity(new Intent(this, LoginOrSignUp.class)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
     }
+
+    public void showPassword(View view) {
+        registrationPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+    };
 
     public class NetworkStateUpdater extends BroadcastReceiver {
 
@@ -113,13 +129,22 @@ public class Register extends AppCompatActivity {
                 final String email = registrationEmail.getText().toString().trim();
                 final String phoneNumber = registrationPhoneNumber.getText().toString().trim();
                 final String password = registrationPassword.getText().toString().trim();
-                if (email.isEmpty() || password.isEmpty() || phoneNumber.isEmpty()) {
+                final String code = countryCode.getText().toString();
+                final String defaultIso = code.replace("+","");
+               final String phoneResultNumber = PhoneNumberUtils.formatNumberToE164(code+phoneNumber,defaultIso);
+
+                if (email.isEmpty() || password.isEmpty() || phoneNumber.isEmpty() || code.isEmpty()) {
                     progressDialog.cancel();
                     Snackbar.make(view, getString(R.string.all_fields_are_required), Snackbar.LENGTH_SHORT).show();
                 } else if ((password.length() <= 9 && !(password.length() >= 6))) {
                     progressDialog.cancel();
                     Snackbar.make(view, "Password must be at least 6 characters long", Snackbar.LENGTH_SHORT).show();
-                } else {
+                }
+                else if(phoneResultNumber == null){
+                    Snackbar.make(view, "Invalid Phone Number", Snackbar.LENGTH_SHORT).show();
+                    progressDialog.cancel();
+                }
+                else{
                     firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(
                             new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -131,7 +156,7 @@ public class Register extends AppCompatActivity {
                                             FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
                                             Map<String, String> values = new HashMap<>();
                                             values.put("email", email);
-                                            values.put("phoneNumber", phoneNumber);
+                                            values.put("phoneNumber", phoneResultNumber);
                                             values.put("userId", userId);
                                             values.put("image", "default");
                                             fireStore.collection("Users").document(userId).set(values)
