@@ -71,6 +71,19 @@ TextView chatName;
 
     }
 
+ /*   @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        ChatModel chatModel;
+        int id = item.getItemId();
+        int selectedPosition = item.getGroupId();
+        if(id == 1){
+            chatModel = new ChatModel();
+         String chat =  messageList.get(selectedPosition).getMessage();
+            Toast.makeText(this, "message is : " + chat, Toast.LENGTH_SHORT).show();
+        }
+        return true;
+    }*/
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.chat_menu, menu);
@@ -120,22 +133,12 @@ TextView chatName;
                                         for (QueryDocumentSnapshot docs : task.getResult()) {
                                             chats = docs.toObject(ChatModel.class);
                                             if (chats.getIsDeleted() != null) {
-
-                                      if (chats.getIsDeleted().equals("false")
-                                                        &&
-                           (chats.getSender().equals(user.getUid()) && chats.getReceiver().equals(theirId) )
-                                                        ||
-                 (chats.getSender().equals(theirId) && chats.getReceiver().equals(user.getUid()))) {
-
+                                                if (chats.getIsDeleted().equals("false")) {
                                                     docs.getReference().update("isDeleted", user.getUid());
-
+                                                    Toast.makeText(MessageActivity.this, "Chat Cleared", Toast.LENGTH_SHORT).show();
                                                     firestore.collection("Users").document(user.getUid()).
                                                             collection("ChatList").document(theirId).delete();
-                                                } else if (chats.getIsDeleted().equals(theirId)
-                                                                                 &&
-                                              (chats.getSender().equals(user.getUid()) && chats.getReceiver().equals(theirId) )
-                                                                                 ||
-                                              (chats.getSender().equals(theirId) && chats.getReceiver().equals(user.getUid()))) {
+                                                } else if (chats.getIsDeleted().equals(theirId)) {
                                                     docs.getReference().delete();
                                                     firestore.collection("Users").document(user.getUid()).
                                                             collection("ChatList").document(theirId).delete();
@@ -186,8 +189,6 @@ TextView chatName;
         profileImage = findViewById(R.id.chat_screen_profile_picture);
         loadProfileImage();
 
-        HomePage.shouldUpdateNotesAsRead = true;
-
         if (intent != null) {
             String name = intent.getStringExtra("type");
             if (name != null) {
@@ -228,7 +229,6 @@ TextView chatName;
 sendMessage(user.getUid(), theirId,textField);
             }
         });
-
         updateMessages();
     }
 
@@ -291,36 +291,31 @@ sendMessage(user.getUid(), theirId,textField);
 }
 
 public void updateMessages(){
-            CollectionReference collection = FirebaseFirestore.getInstance().collection("Chats");
-            collection.addSnapshotListener(
-                    new EventListener<QuerySnapshot>() {
+        CollectionReference collection = FirebaseFirestore.getInstance().collection("Chats");
+             collection.addSnapshotListener(
+                     new EventListener<QuerySnapshot>() {
 
-                        private ChatAdapter chatAdapter;
+                         private ChatAdapter chatAdapter;
 
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                            messageList.clear();
-                            ChatModel chats;
-                            for(QueryDocumentSnapshot docs : queryDocumentSnapshots){
-                                if(!HomePage.shouldUpdateNotesAsRead){
-                                    //don't update since were not in this activity trying to actually view the message
-                                }else {
-                                    //else update that we've read the messages, cuz if this conditions aint checked , if the app is open you'll
-                                    //wanna update even if we haven't viewed it yet cuz you're a stubbon code idiot ;(
-                                    chats = docs.toObject(ChatModel.class);
-                                    if (chats.getSender().equals(myId) && chats.getReceiver().equals(theirId)
-                                            || chats.getReceiver().equals(myId) && chats.getSender().equals(theirId)) {
-                                        messageList.add(chats);
-                                    }
-                                    if (chats.getReceiver().equals(user.getUid()) && chats.getSender().equals(theirId)) {
-                                        docs.getReference().update("isSeen", "true");
-                                    }
-                                    chatAdapter = new ChatAdapter(messageList, getApplicationContext(), chatName.getText().toString());
-                                    recyclerView.setAdapter(chatAdapter);
-                                }
+                         @Override
+                         public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                             messageList.clear();
+                             ChatModel chats;
+                             for(QueryDocumentSnapshot docs : queryDocumentSnapshots){
+                                 chats = docs.toObject(ChatModel.class);
+                                     if(chats.getSender().equals(myId) && chats.getReceiver().equals(theirId)
+                                             ||chats.getReceiver().equals(myId) && chats.getSender().equals(theirId)){
+                                         messageList.add(chats);
+                                     }
+                                 if (chats.getReceiver().equals(user.getUid()) && chats.getSender().equals(theirId)) {
+                                     docs.getReference().update("isSeen", "true");
+                                 }
+                                 chatAdapter = new ChatAdapter(messageList, getApplicationContext(), chatName.getText().toString());
+                                 recyclerView.setAdapter(chatAdapter);
                             }
-                        }
-                    }
-            );
-        }
+                         }
+                     }
+             );
+}
+
 }

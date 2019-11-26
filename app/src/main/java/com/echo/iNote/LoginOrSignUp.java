@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
-import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -160,9 +159,5 @@ public void signInUser(View view){
         } else {
             Toast.makeText(this, getString(R.string.please_check_your_internet_connection), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void showPassword(View view) {
-        password.setInputType(InputType.TYPE_CLASS_TEXT);
     }
 }

@@ -40,7 +40,6 @@ Context context;
     private FirebaseUser firebaseUser;
     private int adapterPosition;
     private String name;
-    private int currentPosition;
 
     ChatAdapter(ArrayList<ChatModel> messageList, Context context, String name) {
     this.messageList = messageList;
@@ -57,7 +56,7 @@ if(viewType == MY_MESSAGE){
     View view = LayoutInflater.from(context).inflate(R.layout.sender_layout,parent,false);
     return new viewHolder(view);
 }
-if (viewType == NOTE_MESSAGE) {
+        if (viewType == NOTE_MESSAGE) {
             View view = LayoutInflater.from(context).inflate(R.layout.notes_layout, parent, false);
             return new viewHolder(view);
         } else if (viewType == THEIR_MESSAGE) {
@@ -78,7 +77,7 @@ if (viewType == NOTE_MESSAGE) {
 ChatModel chat = messageList.get(position);
         if (holder.getItemViewType() == -1) {
 
-        }else {
+        } else {
             if (chat.getSender().equals(firebaseUser.getUid()) && chat.getIsNote().equals("false")) {
                 //Am sending chat
                 holder.myMessage.setText(chat.getMessage());
@@ -92,8 +91,7 @@ ChatModel chat = messageList.get(position);
                 //Am sending Note
                 setNoteValues(holder, chat, "sender");
 
-            } else if (chat.getReceiver().equals(firebaseUser.getUid()) && chat.getIsNote().equals("true")
-            && chat.getSender().equals(messageList.get(holder.getAdapterPosition()).getSender())) {
+            } else if (!chat.getSender().equals(firebaseUser.getUid()) && chat.getIsNote().equals("true")) {
                 //Am receiving note
                 setNoteValues(holder, chat, "receiver");
                 if (chat.getIsNoteSaved().equals("false")) {
@@ -108,7 +106,7 @@ ChatModel chat = messageList.get(position);
                     Toast.makeText(context, "Note message saved", Toast.LENGTH_SHORT).show();
                     registerNoteAsSaved();
                 }
-            }else {
+            } else {
                 holder.theirMessage.setText(chat.getMessage());
                 holder.receiverTime.setText(chat.getPhoneTime());
             }
@@ -142,7 +140,6 @@ ChatModel chat = messageList.get(position);
     }
 
     public void setNoteValues(viewHolder holder, ChatModel chat, String messageType) {
-        currentPosition = holder.getAdapterPosition();
         Gson gson = new Gson();
         Type type = new TypeToken<Notes>() {
         }.getType();
@@ -159,6 +156,28 @@ ChatModel chat = messageList.get(position);
         }
     }
 
+    /* public class ChatContext implements OnCreateContextMenuListener{
+
+         @Override
+         public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+             contextMenu.setHeaderTitle(context.getString(R.string.select_an_option));
+             *//*context menu params (groupID, itemID, menuPosition/Arrangement, StringResource*//*
+
+            contextMenu.add(adapterPosition,1,1,"Details");
+            contextMenu.add(adapterPosition,2,2,context.getString(R.string.contextDelete));
+        }
+    }*/
+   /* public class NoteContext implements OnCreateContextMenuListener{
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            contextMenu.setHeaderTitle(context.getString(R.string.select_an_option));
+            *//*context menu params (groupID, itemID, menuPosition/Arrangement, StringResource*//*
+
+            contextMenu.add(adapterPosition,0,0,"Open");
+            contextMenu.add(adapterPosition,1,1,"Details");
+            contextMenu.add(adapterPosition,2,2,context.getString(R.string.contextDelete));
+        }
+    }*/
     public void saveNotesToMemory() {
         HomePage.sharedPreferences = context.getSharedPreferences(HomePage.MY_PREFERENCE_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = HomePage.sharedPreferences.edit();
@@ -178,11 +197,10 @@ ChatModel chat = messageList.get(position);
                             ChatModel chats;
                             for (QueryDocumentSnapshot docs : task.getResult()) {
                                 chats = docs.toObject(ChatModel.class);
+
                                 if (chats.getIsNoteSaved() != null) {
-                                    if (chats.getIsNoteSaved().equals("false") && chats.getReceiver().equals(firebaseUser.getUid())
-                                    && chats.getSender().equals(messageList.get(currentPosition).getSender())) {
+                                    if (chats.getIsNoteSaved().equals("false")) {
                                         docs.getReference().update("isNoteSaved", "true");
-//                                        docs.getReference().update("isSeen","true");
                                     }
                                 }
                             }

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.viewHolder> {
+public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.viewHolder> {
     Context context;
     private ArrayList<UserContract> userMessageList;
     private UserContract users;
@@ -26,7 +26,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.viewHolder
     private Intent intent;
     ArrayList<ContactListContract> contactList;
 
-    RecentAdapter(ArrayList<UserContract> userMessageList, Context context, ArrayList<ContactListContract> finalContacts) {
+    MessageAdapter(ArrayList<UserContract> userMessageList, Context context, ArrayList<ContactListContract> finalContacts) {
         this.userMessageList = userMessageList;
         this.context = context;
         contactList = finalContacts;
@@ -42,15 +42,12 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.viewHolder
     @Override
     public void onBindViewHolder(@NonNull final viewHolder holder, int position) {
         users = userMessageList.get(holder.getAdapterPosition());
-        if(contactList.isEmpty()){
-            contactList.add(holder.getAdapterPosition(), new ContactListContract("Unsaved Contact", users.getPhoneNumber()));
-        }
         contacts = contactList.get(holder.getAdapterPosition());
         holder.contactName.setText(contacts.getContactName());
         if (users.getImage().equals("default")) {
             //set the default profile image
             holder.profileImage.setImageDrawable(context.getDrawable(R.drawable.user_profile_picture));
-        } else{
+        } else {
             Glide.with(context)
                     .load(users.getImage())
                     .into(holder.profileImage);
@@ -68,7 +65,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.viewHolder
                                     .putExtra("receiver", userMessageList.get(holder.getAdapterPosition()).getUserId())
                                     .putExtra("message", note).putExtra("type", type));
 
-                        } else{
+                        } else {
                             context.startActivity(new Intent(view.getContext(), MessageActivity.class)
                                     .putExtra("contactName", contactList.get(holder.getAdapterPosition()).getContactName())
                                     .putExtra("receiver", userMessageList.get(holder.getAdapterPosition()).getUserId()));

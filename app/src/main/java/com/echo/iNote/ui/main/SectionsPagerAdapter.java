@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.echo.iNote.ContactList;
 import com.echo.iNote.ContactListContract;
 import com.echo.iNote.Messages;
-import com.echo.iNote.Recent;
 
 import java.util.Set;
 
@@ -22,12 +21,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     Set<ContactListContract> contactList;
 
     private final Context mContext;
-    private static final String[] TAB_TITLES = new String[]{"Contacts", "Recent","Messages"};
+    private static final String[] TAB_TITLES = new String[]{"Contacts", "Messages"};
 
     public SectionsPagerAdapter(Context context, FragmentManager fm, Set<ContactListContract> contactList) {
         super(fm);
         mContext = context;
         this.contactList = contactList;
+
     }
 
     @Override
@@ -36,10 +36,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         // Return a PlaceholderFragment (defined as a static inner class below).
         if(position == 0){
             return new ContactList(contactList);
-        }else if(position == 1){
-return new Recent(contactList);
         }else{
-            return new Messages(contactList);
+return new Messages(contactList);
         }
 //        return PlaceholderFragment.newInstance(position + 1);
     }
@@ -52,7 +50,7 @@ return new Recent(contactList);
 
     @Override
     public int getCount() {
-        // Show 3 total pages.
+        // Show 2 total pages.
         return TAB_TITLES.length;
     }
 }

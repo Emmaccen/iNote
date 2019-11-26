@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.echo.iNote">
-    <!-- Todo don't forget to set portrait for chat activity, it sends the share note again when it rotates, and you're too lazy to learn how to use savedInstanceState -->
+    <!-- Todo don't forget to set portrait for chat activity, it sends the share note again when it rotates, and you're too lazy to learn how to use savedInstanceState-->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,9 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:screenOrientation="portrait"
             android:name=".AboutUs"
             android:parentActivityName=".HomePage"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -42,16 +42,17 @@
                 android:value="com.echo.iNote.ChatActivity" />
         </activity>
         <activity
-            android:name=".Register"
             android:screenOrientation="portrait"
+            android:name=".Register"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".LoginOrSignUp"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
         <activity
-            android:name=".OnBoardingScreen"
             android:screenOrientation="portrait"
+            android:name=".OnBoardingScreen"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ChatActivity"
@@ -69,15 +70,15 @@
                 android:value="com.echo.iNote.HomePage" />
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".ProfileActivity"
             android:label="User Profile"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".HomePage"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".HomePage">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.echo.iNote.HomePage" />
@@ -100,5 +101,4 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
     </application>
-
 </manifest>

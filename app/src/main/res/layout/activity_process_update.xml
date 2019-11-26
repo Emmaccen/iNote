@@ -59,47 +59,19 @@
             android:layout_margin="8dp"
             android:elevation="4dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:orientation="horizontal"
-                android:layout_height="match_parent"
+            <EditText
+                android:id="@+id/final_phone_number"
                 android:layout_width="match_parent"
-                android:id="@+id/number_layout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <EditText
-                    android:lines="1"
-                    android:gravity="center"
-                    android:id="@+id/country_code_edit"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:background="@drawable/login_signup_background"
-                    android:paddingStart="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" >
-                </EditText>
-
-                <EditText
-                    android:id="@+id/final_phone_number"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/login_signup_background"
-                    android:drawableEnd="@drawable/profile_phone_number_icon_24dp"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center"
-                    android:hint="New Phone Number"
-                    android:inputType="phone"
-                    android:lines="1"
-                    android:padding="8dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/country_code_edit"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="match_parent"
+                android:background="@drawable/login_signup_background"
+                android:drawableEnd="@drawable/profile_phone_number_icon_24dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:hint="New Phone Number"
+                android:inputType="phone"
+                android:padding="8dp"
+                android:textSize="18sp"
+                android:textStyle="bold" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView

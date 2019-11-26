@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
-import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +28,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
 import java.util.Objects;
 
@@ -40,7 +37,7 @@ public class ProcessUpdate extends AppCompatActivity {
     DocumentReference document;
     FirebaseFirestore firestore;
     //profile update handlers
-    TextView finalEmail, finalPhoneNumber, oldPassword, newPassword, countryCode;
+    TextView finalEmail, finalPhoneNumber, oldPassword, newPassword;
     //the cardViews for processing
     CardView card1, card2, card3, card4;
     ConnectivityManager connectivityManager;
@@ -69,14 +66,7 @@ public class ProcessUpdate extends AppCompatActivity {
         finalPhoneNumber = findViewById(R.id.final_phone_number);
         newPassword = findViewById(R.id.final_new_password);
         oldPassword = findViewById(R.id.final_old_password);
-        countryCode = findViewById(R.id.country_code_edit);
         hideViews(intent);
-
-        TelephonyManager telephonyManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        String countryIso = telephonyManager.getSimCountryIso().toUpperCase();//NG
-        int countryCodeNumber = PhoneNumberUtil.getInstance().getCountryCodeForRegion(countryIso);//234
-        countryCode.setText("+" + countryCodeNumber);
-
 
     }
 
@@ -156,13 +146,7 @@ public class ProcessUpdate extends AppCompatActivity {
                         card3.setVisibility(View.GONE);
                         card4.setVisibility(View.GONE);
 
-                        final String code = countryCode.getText().toString().trim();
-                        final String defaultIso = code.replace("+","");
-                        String finalNum = finalPhoneNumber.getText().toString().trim();
-                        final String phoneResultNumber = PhoneNumberUtils.formatNumberToE164(code+finalNum,defaultIso);
-
-                        if (phoneResultNumber == null || phoneResultNumber.isEmpty()) {
-
+                        if (finalPhoneNumber.getText().toString().isEmpty() || finalPhoneNumber.getText().length() < 4) {
                             Snackbar.make(getCurrentFocus(), "Please Enter A Valid Number", Snackbar.LENGTH_LONG).show();
                         } else {
                             if (user != null) {
@@ -192,7 +176,8 @@ public class ProcessUpdate extends AppCompatActivity {
                                                                         for (QueryDocumentSnapshot docs : task.getResult()) {
                                                                             UserContract iNoteUsers = docs.toObject(UserContract.class);
                                                                             if (iNoteUsers.getPhoneNumber().equals(myNumber)) {
-                                                                                docs.getReference().update("phoneNumber", phoneResultNumber);
+                                                                                String number = finalPhoneNumber.getText().toString().trim();
+                                                                                docs.getReference().update("phoneNumber", number);
                                                                                 progressDialog.cancel();
                                                                                 startActivity(new Intent(ProcessUpdate.this, HomePage.class)
                                                                                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));

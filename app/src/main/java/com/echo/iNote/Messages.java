@@ -2,7 +2,6 @@ package com.echo.iNote;
 
 
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,7 @@ import java.util.Set;
 public class Messages extends Fragment {
     ArrayList<UserContract> userMessageList;
     private ArrayList<ContactListContract> finalContact;
-    NewMessagesAdapter newMessagesAdapter;
+    MessageAdapter messageAdapter;
     RecyclerView recyclerView;
     private FirebaseFirestore firestore;
     private FirebaseUser user;
@@ -45,37 +44,34 @@ public class Messages extends Fragment {
     ArrayList<ContactListContract> contact;
 
     public Messages(Set<ContactListContract> contacts) {
-        contact = new ArrayList<>(contacts);
-        // Required empty public constructor
+contact = new ArrayList<>(contacts);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_messages, container, false);
-
+        view = inflater.inflate(R.layout.fragment_messages, container, false);
         firestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
         chatIds = new LinkedHashSet<>();
         if (user != null) {
 
-            CollectionReference collection = firestore.collection("Chats");
+            CollectionReference collection = firestore.collection("Users").document(user.getUid()).collection("ChatList");
             final CollectionReference usersCollection = firestore.collection("Users");
             collection.addSnapshotListener(
                     new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                             if (user != null) {
-                                ChatModel chats;
+                                ChatList chatList;
                                 if (queryDocumentSnapshots != null) {
                                     for (QueryDocumentSnapshot docs : queryDocumentSnapshots) {
-                                        chats = docs.toObject(ChatModel.class);
-                                        if(chats.getReceiver().equals(user.getUid()) && chats.getIsSeen().equals("false")){
-                                            String chat = chats.getSender();
-                                            chatIds.add(chat);
-                                        }
+                                        chatList = docs.toObject(ChatList.class);
+                                        String friend = chatList.getChatId();
+                                        chatIds.add(friend);
                                     }
                                     usersCollection.get().addOnCompleteListener(
                                             new OnCompleteListener<QuerySnapshot>() {
@@ -95,7 +91,7 @@ public class Messages extends Fragment {
                                                                     if (users.getUserId().equals(id)) {
                                                                         userMessageList.add(users);
                                                                         for(ContactListContract finalCont : contact){
-                                                                            if(PhoneNumberUtils.compare(finalCont.getContactPhoneNumber(),users.getPhoneNumber())){
+                                                                            if(finalCont.getContactPhoneNumber().contains(users.getPhoneNumber())){
                                                                                 finalContact.add(finalCont);
                                                                             }
                                                                         }
@@ -103,10 +99,10 @@ public class Messages extends Fragment {
                                                                     }
                                                                 }
                                                             }
-                                                            recyclerView = view.findViewById(R.id.messages_fragment_recycler_view);
+                                                            recyclerView = view.findViewById(R.id.message_fragment_recycler_view);
                                                             recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-                                                            newMessagesAdapter = new NewMessagesAdapter(userMessageList, getContext(),finalContact);
-                                                            recyclerView.setAdapter(newMessagesAdapter);
+                                                            messageAdapter = new MessageAdapter(userMessageList, getContext(),finalContact);
+                                                            recyclerView.setAdapter(messageAdapter);
                                                             // adapter here
                                                         }
                                                     }
@@ -120,6 +116,31 @@ public class Messages extends Fragment {
             );
         }
 
+
+
+     /*   CollectionReference collectionReference = firestore.collection("Chats");
+        collectionReference.addSnapshotListener(
+                new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                       chatIds.clear();
+                       ChatModel users;
+                        assert queryDocumentSnapshots != null;
+                        for(QueryDocumentSnapshot docs: queryDocumentSnapshots){
+                           users = docs.toObject(ChatModel.class);
+                           if(user != null){
+                               if(!user.getUid().equals(users.getSender())){
+                                        chatIds.add(users.getSender());
+                               }else if((!user.getUid().equals(users.getReceiver()))){
+                                   chatIds.add(users.getReceiver());
+                               }
+
+                           }
+
+                       }
+                    }
+                }
+        );*/
 
         return view;
     }
